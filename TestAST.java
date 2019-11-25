@@ -270,4 +270,171 @@ public class TestAST extends TestCase {
 	assertEquals(-1,var.getPriority());
     }
 
+
+
+         //toString
+    @Test
+    public void testToStringAtoms() {
+	Constant c1 = new Constant(1);
+	Variable v1 = new Variable("x");
+	NamedConstant con = new NamedConstant("New", 41);
+	assertEquals("1.0",c1.toString());
+	assertEquals("x", v1.toString());
+	assertEquals("41.0", con.toString());
+    }
+
+    @Test
+    public void testToStringBinary() {
+        Constant c1 = new Constant(1);
+	Constant c2 = new Constant(2);
+	Variable v1 = new Variable("x");
+	Addition add = new Addition(c1,c2);
+	Subtraction sub = new Subtraction(c1,c2);
+	Division div = new Division(c1,c2);
+	Multiplication mult = new Multiplication(c1,c2);
+	Assignment ass1 = new Assignment(c1,v1);
+	assertEquals("1.0 + 2.0", add.toString());
+	assertEquals("1.0 - 2.0", sub.toString());
+	assertEquals("1.0 / 2.0", div.toString());
+	assertEquals("1.0 * 2.0", mult.toString());
+	assertEquals("1.0 := x", ass1.toString());
+    }
+    @Test
+    public void testToStringUnary() {
+	Constant c1 = new Constant(1);
+	Cos cos = new Cos(c1);
+	Exp exp = new Exp(c1);
+	Log log = new Log(c1);
+	Negation neg = new Negation(c1);
+	Sin sin = new Sin(c1);
+	assertEquals("cos(1.0)", cos.toString());
+	assertEquals("exp(1.0)", exp.toString());
+	assertEquals("log(1.0)", log.toString());
+	assertEquals("-(1.0)", neg.toString());
+	assertEquals("sin(1.0)", sin.toString());
+    }
+
+         //equals
+    @Test
+    public void testEqualsAtoms() {
+	Constant c1 = new Constant(1);
+	Variable v1 = new Variable("x");
+	NamedConstant named = new NamedConstant("new", 52);
+	assertTrue(c1.equals(new Constant(1)));
+	assertFalse(c1.equals(new Constant(2)));
+	assertTrue(v1.equals(new Variable("x")));
+	assertFalse(v1.equals(new Variable("y")));
+	assertTrue(named.equals(new NamedConstant("new", 52)));
+	assertFalse(named.equals(new NamedConstant("no", 1)));
+    }
+
+    @Test
+    public void testEqualsBinary() {
+	Constant c1 = new Constant(1);
+	Constant c2 = new Constant(2);
+	Variable v1 = new Variable("x");
+	Addition add = new Addition(c1,c2);
+        Subtraction sub = new Subtraction(c1,c2);
+	Division div = new Division(c1,c2);
+	Multiplication mult = new Multiplication(c1,c2);
+	Assignment ass1 = new Assignment(c1,v1);
+	assertTrue(add.equals(new Addition(new Constant(1), new Constant(2))));
+	assertFalse(add.equals(new Addition(new Constant(2), new Constant(2))));
+	assertTrue(sub.equals(new Subtraction(new Constant(1), new Constant(2))));
+	assertFalse(sub.equals(new Subtraction(new Constant(2), new Constant(2))));
+	assertTrue(div.equals(new Division(new Constant(1), new Constant(2))));
+	assertFalse(div.equals(new Division(new Constant(2), new Constant(2))));
+	assertTrue(mult.equals(new Multiplication(new Constant(1), new Constant(2))));
+	assertFalse(mult.equals(new Multiplication(new Constant(2), new Constant(2))));
+	assertTrue(ass1.equals(new Assignment(new Constant(1), new Variable("x"))));
+	assertFalse(ass1.equals(new Assignment(new Constant(2), new Variable("y"))));
+    }
+
+    @Test
+    public void testEqualsUnary() {
+	Constant c1 = new Constant(1);
+	Cos cos = new Cos(c1);
+	Exp exp = new Exp(c1);
+	Log log = new Log(c1);
+	Sin sin = new Sin(c1);
+	Negation neg = new Negation(c1);
+	assertTrue(cos.equals(new Cos(new Constant(1))));
+	assertFalse(cos.equals(new Cos(new Constant(2))));
+	assertTrue(exp.equals(new Exp(new Constant(1))));
+	assertFalse(exp.equals(new Exp(new Constant(2))));
+	assertTrue(log.equals(new Log(new Constant(1))));
+	assertFalse(log.equals(new Log(new Constant(2))));
+	assertTrue(sin.equals(new Sin(new Constant(1))));
+	assertFalse(sin.equals(new Sin(new Constant(2))));
+	assertTrue(neg.equals(new Negation(new Constant(1))));
+	assertFalse(neg.equals(new Negation(new Constant(2))));
+	
+    }
+
+
+         //eval
+    @Test
+    public void testEvalAtoms() {
+	Constant c1 = new Constant(1);
+	Variable v1 = new Variable("x");
+	NamedConstant named = new NamedConstant("new", 52);
+	Environment env = new Environment();
+	assertEquals("1.0",c1.eval(env).toString());
+	assertNotEquals("2.0",c1.eval(env).toString());
+	
+	assertEquals("x",v1.eval(env).toString());
+	assertNotEquals("y",v1.eval(env).toString());
+	
+	assertEquals("52.0",named.eval(env).toString());
+	assertNotEquals("53.0",named.eval(env).toString());
+    }
+
+    @Test
+    public void testEvalBinary() {
+	Constant c1 = new Constant(4);
+	Constant c2 = new Constant(2);
+	Variable v1 = new Variable("x");
+	Addition add = new Addition(c1,c2);
+	Subtraction sub = new Subtraction(c1,c2);
+	Division div = new Division(c1,c2);
+	Multiplication mult = new Multiplication(c1,c2);
+	Assignment ass1 = new Assignment(c1,v1);
+	Environment env = new Environment();
+	assertEquals("6.0",add.eval(env).toString());
+	assertNotEquals("7.0",add.eval(env).toString());
+	
+	assertEquals("2.0",sub.eval(env).toString());
+	assertNotEquals("6.0",sub.eval(env).toString());
+	
+	assertEquals("2.0",div.eval(env).toString());
+	assertNotEquals("6.0",div.eval(env).toString());
+	
+	assertEquals("8.0",mult.eval(env).toString());
+	assertNotEquals("6.0",mult.eval(env).toString());
+	
+	assertEquals("4.0",ass1.eval(env).toString());
+	assertNotEquals("6.0",ass1.eval(env).toString());
+    }
+
+    @Test
+    public void testEvalUnary() {
+	Constant c1 = new Constant(1);
+	Cos cos = new Cos(c1);
+	Exp exp = new Exp(c1);
+	Log log = new Log(c1);
+	Sin sin = new Sin(c1);
+	Negation neg = new Negation(c1);
+	Environment env = new Environment();
+	assertEquals("0.5403023058681398", cos.eval(env).toString());
+	assertNotEquals("-1.0", cos.eval(env).toString());
+	assertEquals("2.718281828459045", exp.eval(env).toString());
+	assertNotEquals("0.5403023058681398", exp.eval(env).toString());
+	assertEquals("0.0", log.eval(env).toString());
+	assertNotEquals("0.5403023058681398", log.eval(env).toString());
+	assertEquals("0.8414709848078965", sin.eval(env).toString());
+	assertNotEquals("0.5403023058681398", sin.eval(env).toString());
+	assertEquals("-1.0", neg.eval(env).toString());
+	assertNotEquals("0.5403023058681398", neg.eval(env).toString());
+    }
+
 }

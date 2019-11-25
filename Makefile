@@ -24,10 +24,19 @@ junit_ast_compile: ast
 junit_ast_test:
 	java -cp JUNIT/junit-4.13-rc-1.jar:JUNIT/hamcrest-core-1.3.jar:bin/ org.junit.runner.JUnitCore  TestAST
 
+junit_parser_compile: parser
+	javac -cp JUNIT/junit-4.13-rc-1.jar:bin/ -d bin/ TestParser.java
+
+junit_parser_test:
+	java -cp JUNIT/junit-4.13-rc-1.jar:JUNIT/hamcrest-core-1.3.jar:bin/ org.junit.runner.JUnitCore  TestParser
+
+
 ast_test_clean:
 	rm TestAST.class org/ioopm/calculator/ast/*.class
 
 ast_test: junit_ast_compile junit_ast_test
+
+parser_test: junit_parser_compile junit_parser_test
 
 clean:
 	rm -rf bin/

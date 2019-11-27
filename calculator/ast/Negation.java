@@ -29,7 +29,11 @@ public class Negation extends Unary {
         SymbolicExpression e = this.getSubTree().eval(env);
         if(e.isConstant()) {
             return new Constant(-(e.getValue()));
-        } 
+        }
         return this;
+    }
+
+    public SymbolicExpression accept(Visitor v){
+      return v.visit(this);
     }
 }

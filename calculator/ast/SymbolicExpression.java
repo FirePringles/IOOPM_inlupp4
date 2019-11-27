@@ -4,7 +4,7 @@ package org.ioopm.calculator.ast;
 */
 public abstract class SymbolicExpression {
 
-    
+
     /**
      * Tells whether the object is a constant and therefore is already evaluated.
      * This means that the .getValue() method can be used.
@@ -87,4 +87,10 @@ public abstract class SymbolicExpression {
      * @return      Whether the two syntax trees are equal or not
      */
     public boolean equals(Object other) {return false;}
+
+
+    public SymbolicExpression accept(Visitor v){
+      return v.visit(this);
+    }
+
 }

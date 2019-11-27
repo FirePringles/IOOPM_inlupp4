@@ -51,4 +51,8 @@ public class Variable extends Atom {
             return this;
         }
     }
+
+    public SymbolicExpression accept(Visitor v){
+      return v.visit(this);
+    }
 }

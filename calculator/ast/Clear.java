@@ -14,4 +14,8 @@ public class Clear extends Command {
     public static Clear instance() {
         return theInstance;
     }
+
+    public SymbolicExpression accept(Visitor v){
+      return v.visit(this);
+    }
 }

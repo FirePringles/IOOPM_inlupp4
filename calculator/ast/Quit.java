@@ -14,4 +14,8 @@ public class Quit extends Command {
     public static Quit instance() {
         return theInstance;
     }
+
+    public SymbolicExpression accept(Visitor v){
+      return v.visit(this);
+    }
 }

@@ -2,7 +2,7 @@ package org.ioopm.calculator.ast;
 
 /** Represents a division.
 */
-public class Division extends Binary {
+public class Division extends Binary implements Visitable{
 
     /**
      * Creates a division object
@@ -36,5 +36,9 @@ public class Division extends Binary {
             return new Constant(lhs.getValue() / rhs.getValue());
         }
         return this;
+    }
+
+    public SymbolicExpression accept(Visitor v){
+      return v.visit(this);
     }
 }

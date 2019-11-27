@@ -21,7 +21,7 @@ public class Assignment extends Binary {
         return 100;
     }
 
-    
+
     public SymbolicExpression eval(Environment env) {
         SymbolicExpression lhs = this.getLHS();
         SymbolicExpression rhs = this.getRHS();
@@ -37,5 +37,9 @@ public class Assignment extends Binary {
             return new Constant(lhs.getValue());
         }
         return lhs;
+    }
+
+    public SymbolicExpression accept(Visitor v){
+      return v.visit(this);
     }
 }

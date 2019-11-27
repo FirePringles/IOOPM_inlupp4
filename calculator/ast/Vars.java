@@ -14,4 +14,8 @@ public class Vars extends Command {
     public static Vars instance() {
         return theInstance;
     }
+
+    public SymbolicExpression accept(Visitor v){
+      return v.visit(this);
+    }
 }

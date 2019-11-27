@@ -25,7 +25,11 @@ public class Cos extends Unary {
         this.setSubTree(e);
         if(e.isConstant()) {
             return new Constant(Math.cos(e.getValue()));
-        } 
+        }
         return this;
+    }
+
+    public SymbolicExpression accept(Visitor v){
+      return v.visit(this);
     }
 }

@@ -4,7 +4,7 @@ package org.ioopm.calculator.ast;
 public class EvaluationVisitor implements Visitor {
     private Environment env = null;
 
-    public SymbolicExpression evaluate(Symbolicexpression topLevel, Environment env) {
+    public SymbolicExpression evaluate(SymbolicExpression topLevel, Environment env) {
         this.env = env;
         return topLevel.accept(this);
     }
@@ -112,7 +112,7 @@ public class EvaluationVisitor implements Visitor {
     }
 
     public SymbolicExpression visit(Quit n){
-      return null;
+      throw new RuntimeException("Can't evaluate vars");
     }
 
     public SymbolicExpression visit(Sin n){
@@ -135,18 +135,17 @@ public class EvaluationVisitor implements Visitor {
 
     }
 
-// Här slutade jag!!
     public SymbolicExpression visit(Variable n){
-      if(this.env.containsKey(this)) {
-          return this.env.get(this).eval(env);
+      if(this.env.containsKey(n)) {
+          return n.accept(this);
       }
       else {
-          return this;
+          return new Variable(n.getName());
       }
     }
 
     public SymbolicExpression visit(Vars n){
-      return null;
+      throw new RuntimeException("Can't evaluate vars");
     }
 
 }

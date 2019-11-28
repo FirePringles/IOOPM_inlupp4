@@ -89,8 +89,6 @@ public abstract class SymbolicExpression {
     public boolean equals(Object other) {return false;}
 
 
-    public SymbolicExpression accept(Visitor v){
-      return v.visit(this);
-    }
+    public abstract SymbolicExpression accept(Visitor v);
 
 }

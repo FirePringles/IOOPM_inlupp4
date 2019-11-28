@@ -16,6 +16,6 @@ public class Quit extends Command {
     }
 
     public SymbolicExpression accept(Visitor v){
-      return v.visit(this);
+      throw new RuntimeException("Can't be visited");
     }
 }

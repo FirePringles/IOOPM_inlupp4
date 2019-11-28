@@ -34,4 +34,7 @@ public class Multiplication extends Binary implements Visitable{
         }
         return this;
     }
+    public SymbolicExpression accept(Visitor v){
+      return v.visit(this);
+    }
 }

@@ -22,23 +22,6 @@ public class Assignment extends Binary {
     }
 
 
-    public SymbolicExpression eval(Environment env) {
-        SymbolicExpression lhs = this.getLHS();
-        SymbolicExpression rhs = this.getRHS();
-
-        if(rhs instanceof NamedConstant) {
-            throw new IllegalExpressionException("Cannot reassign constant");
-        }
-
-        lhs = lhs.eval(env);
-        env.put((Variable) rhs, lhs);
-
-        if(lhs.isConstant()) {
-            return new Constant(lhs.getValue());
-        }
-        return lhs;
-    }
-
     public SymbolicExpression accept(Visitor v){
       return v.visit(this);
     }

@@ -25,14 +25,6 @@ public class Negation extends Unary {
         return this.getName() + "(" + this.getSubTree().toString() + ")";
     }
 
-    public SymbolicExpression eval(Environment env) {
-        SymbolicExpression e = this.getSubTree().eval(env);
-        if(e.isConstant()) {
-            return new Constant(-(e.getValue()));
-        }
-        return this;
-    }
-
     public SymbolicExpression accept(Visitor v){
       return v.visit(this);
     }

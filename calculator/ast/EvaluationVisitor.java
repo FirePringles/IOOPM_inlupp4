@@ -137,10 +137,10 @@ public class EvaluationVisitor implements Visitor {
 
     public SymbolicExpression visit(Variable n){
       if(this.env.containsKey(n)) {
-          return n.accept(this);
+          return env.get(n).accept(this);
       }
       else {
-          return new Variable(n.getName());
+          return new Variable(n.toString());
       }
     }
 

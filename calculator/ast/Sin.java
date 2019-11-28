@@ -14,14 +14,6 @@ public class Sin extends Unary {
         return 25;
     }
 
-    public SymbolicExpression eval(Environment env) {
-        SymbolicExpression e = this.getSubTree().eval(env);
-        this.setSubTree(e);
-        if(e.isConstant()) {
-            return new Constant(Math.sin(e.getValue()));
-        }
-        return this;
-    }
 
     public SymbolicExpression accept(Visitor v){
       return v.visit(this);

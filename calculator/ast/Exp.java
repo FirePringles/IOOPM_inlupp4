@@ -2,7 +2,7 @@ package org.ioopm.calculator.ast;
 
 /** Represents the e^x operation.
 */
-public class Exp extends Unary {
+public class Exp extends Unary implements Visitable {
 
     /**
      * Creates an exp object
@@ -27,6 +27,10 @@ public class Exp extends Unary {
             return new Constant(Math.exp(e.getValue()));
         } 
         return this;
+    }
+    @Override
+    public SymbolicExpression accept(Visitor v) {
+	return v.visit(this);
     }
 
 }

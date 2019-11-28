@@ -2,7 +2,7 @@ package org.ioopm.calculator.ast;
 
 /** Represents natural logarithm operation.
 */
-public class Log extends Unary {
+public class Log extends Unary implements Visitable{
 
     /**
      * Creates a log object
@@ -28,5 +28,9 @@ public class Log extends Unary {
             return new Constant(Math.log(e.getValue()));
         } 
         return this;
+    }
+    @Override
+    public SymbolicExpression accept(Visitor v) {
+	return v.visit(this);
     }
 }

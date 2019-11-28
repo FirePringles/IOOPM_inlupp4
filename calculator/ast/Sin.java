@@ -2,7 +2,7 @@ package org.ioopm.calculator.ast;
 
 /** Represents the sine operation.
 */
-public class Sin extends Unary {
+public class Sin extends Unary implements Visitable {
 
     public Sin(SymbolicExpression x) {
         super(x);
@@ -21,5 +21,9 @@ public class Sin extends Unary {
             return new Constant(Math.sin(e.getValue()));
         } 
         return this;
+    }
+    @Override
+    public SymbolicExpression accept(Visitor v) {
+	return v.visit(this);
     }
 }

@@ -2,7 +2,7 @@ package org.ioopm.calculator.ast;
 
 /** Represents the unary negation operation.
 */
-public class Negation extends Unary {
+public class Negation extends Unary implements Visitable {
 
 
     /**
@@ -31,5 +31,9 @@ public class Negation extends Unary {
             return new Constant(-(e.getValue()));
         } 
         return this;
+    }
+    @Override
+    public SymbolicExpression accept(Visitor v) {
+	return v.visit(this);
     }
 }

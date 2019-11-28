@@ -2,7 +2,7 @@ package org.ioopm.calculator.ast;
 
 /** Represents a named variable.
 */
-public class Variable extends Atom {
+public class Variable extends Atom implements Visitable {
     private String identifier;
 
     /**
@@ -50,5 +50,9 @@ public class Variable extends Atom {
         else {
             return this;
         }
+    }
+    @Override
+    public SymbolicExpression accept(Visitor v) {
+	return v.visit(this);
     }
 }

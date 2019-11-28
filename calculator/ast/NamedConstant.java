@@ -2,7 +2,7 @@ package org.ioopm.calculator.ast;
 
 /** Represents a named constant such as pi.
 */
-public class NamedConstant extends Constant {
+public class NamedConstant extends Constant implements Visitable {
     private String identifier;
 
     /**
@@ -14,5 +14,9 @@ public class NamedConstant extends Constant {
     public NamedConstant(String name, double value) {
         super(value);
         this.identifier = name;
+    }
+    @Override
+    public SymbolicExpression accept(Visitor v) {
+	return v.visit(this);
     }
 }

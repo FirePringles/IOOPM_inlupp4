@@ -2,7 +2,7 @@ package org.ioopm.calculator.ast;
 
 /** Represents the quit command.
 */
-public class Quit extends Command {
+public class Quit extends Command implements Visitable{
     private static final Quit theInstance = new Quit();
     private Quit() {}
 
@@ -13,5 +13,9 @@ public class Quit extends Command {
      */
     public static Quit instance() {
         return theInstance;
+    }
+    @Override
+    public SymbolicExpression accept(Visitor v) {
+	return v.visit(this);
     }
 }

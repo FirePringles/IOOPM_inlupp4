@@ -2,7 +2,7 @@ package org.ioopm.calculator.ast;
 
 /** Represents a subtraction.
 */
-public class Subtraction extends Binary {
+public class Subtraction extends Binary implements Visitable{
     /**
      * Creates a subtraction object
      *
@@ -30,5 +30,9 @@ public class Subtraction extends Binary {
             return new Constant(lhs.getValue() - rhs.getValue());
         }
         return this;
+    }
+    @Override
+    public SymbolicExpression accept(Visitor v) {
+	return v.visit(this);
     }
 }

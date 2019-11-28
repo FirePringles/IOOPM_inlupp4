@@ -2,7 +2,7 @@ package org.ioopm.calculator.ast;
 
 /** Represents a variable assignment.
 */
-public class Assignment extends Binary {
+public class Assignment extends Binary implements Visitable {
     /**
      * Creates an assignment object
      *
@@ -37,5 +37,9 @@ public class Assignment extends Binary {
             return new Constant(lhs.getValue());
         }
         return lhs;
+    }
+    @Override
+    public SymbolicExpression accept(Visitor v) {
+	return v.visit(this);
     }
 }

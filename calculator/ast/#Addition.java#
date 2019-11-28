@@ -2,7 +2,7 @@ package org.ioopm.calculator.ast;
 
 /** Represents an addition.
 */
-public class Addition extends Binary implements Visitable {
+public class Addition extends Binary {
     /**
      * Creates an addition object
      *
@@ -12,11 +12,11 @@ public class Addition extends Binary implements Visitable {
     public Addition(SymbolicExpression e1, SymbolicExpression e2) {
         super(e1, e2);
     }
-
+    @Override
     public String getName() {
         return " + ";
     }
-
+    @Override
     public int getPriority() {
         return 75;
     }
@@ -33,8 +33,9 @@ public class Addition extends Binary implements Visitable {
         }
         return this;
     }
+
     @Override
     public SymbolicExpression accept(Visitor v) {
-	return v.visit(this);
+	return v.vistit(this);
     }
 }

@@ -2,7 +2,7 @@ public class EvaluationVisitor implements Visitor{
   private Environment env = null;
 
   public SymbolicExpression evaluate(SymbolicExpression topLevel, Environment env){
-    this.env = env
+    this.env = env;
     return topLevel.accept(this);
   }
 

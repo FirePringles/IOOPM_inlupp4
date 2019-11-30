@@ -14,10 +14,12 @@ public class Variable extends Atom {
         this.identifier = name;
     }
 
+    @Override
     public int getPriority() {
         return -1;
     }
 
+    @Override
     public String toString() {
         return this.identifier;
     }
@@ -26,6 +28,7 @@ public class Variable extends Atom {
         return this.identifier.equals(other.identifier);
     }
 
+    @Override
     public boolean equals(Object other) {
         if(other instanceof Variable) {
             return this.equals((Variable) other);
@@ -39,10 +42,12 @@ public class Variable extends Atom {
      *
      * @return The hash code od the specific identifier
      */
+    @Override
     public int hashCode() {
         return this.identifier.hashCode();
     }
 
+    @Override
     public SymbolicExpression accept(Visitor v){
       return v.visit(this);
     }

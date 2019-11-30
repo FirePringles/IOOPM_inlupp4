@@ -57,6 +57,8 @@ public abstract class Binary extends SymbolicExpression {
      *
      * @return      The string that represents the syntax tree with correctly added parentheses
      */
+
+    @Override
     public String toString() {
         String expr = "";
         if(lhs.getPriority() >= this.getPriority()) {
@@ -66,7 +68,7 @@ public abstract class Binary extends SymbolicExpression {
         }
 
         expr = expr + this.getName();
-        
+
         if(rhs.getPriority() >= this.getPriority()) {
             expr = expr + "(" + this.rhs.toString() + ")";
         } else {
@@ -92,6 +94,8 @@ public abstract class Binary extends SymbolicExpression {
      * @param       other The syntax tree to compare the current expression to
      * @return      Whether the two syntax trees are equal or not
      */
+
+    @Override
     public boolean equals(Object other) {
         if(!(other instanceof Binary)) {
             return false;

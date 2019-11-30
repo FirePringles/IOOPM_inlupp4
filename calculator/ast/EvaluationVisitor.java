@@ -1,7 +1,5 @@
 package org.ioopm.calculator.ast;
 
-import org.ioopm.calculator.parser.SyntaxErrorException;
-
 public class EvaluationVisitor implements Visitor {
     private Environment env = null;
 
@@ -113,7 +111,7 @@ public class EvaluationVisitor implements Visitor {
     }
 
     public SymbolicExpression visit(Quit n){
-      throw new SyntaxErrorException("Can't evaluate vars");
+      throw new RuntimeException("Can't evaluate vars");
     }
 
     public SymbolicExpression visit(Sin n){
@@ -146,7 +144,7 @@ public class EvaluationVisitor implements Visitor {
     }
 
     public SymbolicExpression visit(Vars n){
-      throw new SyntaxErrorException("Can't evaluate vars");
+      throw new RuntimeException("Can't evaluate vars");
     }
 
 }

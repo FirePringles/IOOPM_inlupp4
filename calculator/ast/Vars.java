@@ -15,6 +15,7 @@ public class Vars extends Command {
         return theInstance;
     }
 
+    @Override
     public SymbolicExpression accept(Visitor v){
       throw new RuntimeException("Can't be visited");
     }

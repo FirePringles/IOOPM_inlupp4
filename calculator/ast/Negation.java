@@ -13,18 +13,23 @@ public class Negation extends Unary {
     public Negation(SymbolicExpression x) {
         super(x);
     }
+
+    @Override
     public String getName() {
         return "-";
     }
 
+    @Override
     public int getPriority() {
         return 100;
     }
 
+    @Override
     public String toString() {
         return this.getName() + "(" + this.getSubTree().toString() + ")";
     }
 
+    @Override
     public SymbolicExpression accept(Visitor v){
       return v.visit(this);
     }

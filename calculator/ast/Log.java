@@ -12,15 +12,20 @@ public class Log extends Unary {
     public Log(SymbolicExpression x) {
         super(x);
     }
+
+    @Override
     public String getName() {
         return "log";
     }
 
+
+    @Override
     public int getPriority() {
         return 25;
     }
 
 
+    @Override
     public SymbolicExpression accept(Visitor v){
       return v.visit(this);
     }

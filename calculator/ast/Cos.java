@@ -12,15 +12,19 @@ public class Cos extends Unary {
     public Cos(SymbolicExpression x) {
         super(x);
     }
+
+    @Override
     public String getName() {
         return "cos";
     }
 
+    @Override
     public int getPriority() {
         return 25;
     }
 
 
+    @Override
     public SymbolicExpression accept(Visitor v){
       return v.visit(this);
     }

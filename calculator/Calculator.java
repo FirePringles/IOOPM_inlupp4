@@ -18,8 +18,9 @@ public class Calculator {
             System.out.printf("Commands executed: %s\nCommands successfully evaluated: %s\nFully evaluated commands: %s\n", Calculator.commands, Calculator.successfulCommands, Calculator.fullyEvaluatedCommands);
             System.exit(0);
         } else if(command == Vars.instance()) {
-            BiConsumer<Variable, SymbolicExpression > printer = (var, num)->System.out.println(var+": "+num);
-            Calculator.env.forEach(printer);
+            //BiConsumer<Variable, SymbolicExpression > printer = (var, num)->System.out.println(var+": "+num);
+            //Calculator.env.forEach(printer);
+            System.out.println(env.toString());
         } else if(command == Clear.instance()) {
             Calculator.env.clear();
         } else {

@@ -1,10 +1,16 @@
 package org.ioopm.calculator.ast;
 
+import java.util.ArrayList; 
+
 public class EvaluationVisitor implements Visitor {
     private Environment env = null;
 
+    private ArrayList<Environment> stack;
+
     public SymbolicExpression evaluate(SymbolicExpression topLevel, Environment env) {
         this.env = env;
+        this.stack = new ArrayList<Environment>();
+        this.stack.add(0, env);
         return topLevel.accept(this);
     }
 
@@ -34,7 +40,7 @@ public class EvaluationVisitor implements Visitor {
       SymbolicExpression lhs = n.getLHS().accept(this);
       SymbolicExpression rhs = n.getRHS();
 
-      this.env.put((Variable)rhs, lhs);
+      this.stack.get(0).put((Variable)rhs, lhs);
 
 
       if(lhs.isConstant()) {
@@ -131,12 +137,24 @@ public class EvaluationVisitor implements Visitor {
     }
 
     public SymbolicExpression visit(Variable n){
-      if(this.env.containsKey(n)) {
-          return env.get(n).accept(this);
+      for(Environment e : this.stack){
+        if(e.containsKey(n)){
+          return e.get(n).accept(this);
+        }
       }
-      else {
-          return n;//new Variable(n.toString());
-      }
+        return n;//new Variable(n.toString());
+    }
+
+    public SymbolicExpression visit(Scope n){
+      // Push on stack
+      this.stack.add(0, new Environment());
+
+      SymbolicExpression exp = n.getExp().accept(this);
+
+      // Pop on stack
+      this.stack.remove(0);
+
+      return exp;
     }
 
     public SymbolicExpression visit(Vars n){

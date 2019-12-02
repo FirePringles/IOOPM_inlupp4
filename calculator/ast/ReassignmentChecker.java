@@ -4,11 +4,15 @@ import java.util.ArrayList;
 
 public class ReassignmentChecker implements Visitor{
   private Environment env;
+
+  // Think it is working, feel like we could do a better solution however, idk
   private ArrayList<SymbolicExpression> checkList = new ArrayList<SymbolicExpression>();
+  private ArrayList<ArrayList<SymbolicExpression>> stack = new ArrayList<ArrayList<SymbolicExpression>>();
 
   public boolean reassignedCheck(SymbolicExpression topLevel, Environment env){
     this.env = env;
     checkList.clear();
+    stack.add(checkList);
 
     try{
       topLevel.accept(this);
@@ -29,10 +33,11 @@ public class ReassignmentChecker implements Visitor{
 
     // Need better printing (if we are to follow the example on the website)
   public SymbolicExpression visit(Assignment a){
-    if(this.checkList.contains(a.getRHS())){
-      throw new IllegalExpressionException("Variables cannot be reassigned in the same expression");
+    if(this.stack.get(0).contains(a.getRHS())){
+
+      throw new IllegalExpressionException(a.toString() + " is already assigned in this expression");
     } else {
-      checkList.add(a.getRHS());
+      stack.get(0).add(a.getRHS());
       a.getLHS().accept(this);
       a.getRHS().accept(this);
       return a;
@@ -91,6 +96,13 @@ public class ReassignmentChecker implements Visitor{
   }
 
   public SymbolicExpression visit(Variable a){
+    return a;
+  }
+
+  public SymbolicExpression visit(Scope a){
+    stack.add(0, new ArrayList<SymbolicExpression>());
+    a.getExp().accept(this);
+    stack.remove(0);
     return a;
   }
 

@@ -10,7 +10,7 @@ public class CalculatorParser {
     private StreamTokenizer st;
 
     public CalculatorParser() {
-        
+
     }
     private boolean isCommand(String word) {
         switch(word) {
@@ -31,7 +31,7 @@ public class CalculatorParser {
     }
     /**
      * Creates StreamTokenizer of a input string and then send that to the rest of the parser
-     * 
+     *
      * @param input the string which we want the parser to pars
      * @return SymbolicExpression the result of the parsed input string
      */
@@ -42,11 +42,11 @@ public class CalculatorParser {
         this.st.eolIsSignificant(true);
         return top_level();
     }
-    
+
 
      /**
      * Check if current object is either a command or a expression.
-     * 
+     *
      * @return SymbolicExpression the result which is either a expression or a command
      */
     private SymbolicExpression top_level() throws IOException {
@@ -57,25 +57,25 @@ public class CalculatorParser {
         } else {
             this.st.pushBack();
             result = assignment();
-        }        
-        
+        }
+
         if((this.st.nextToken() != this.st.TT_EOL)) {
             this.st.pushBack();
             throw new SyntaxErrorException("Expected newline but got " + this.st.nextToken());
         }
         return result;
     }
-    
-    
+
+
      /**
-     * Check if object after current object is a '=' and if it is then create new Assignment 
+     * Check if object after current object is a '=' and if it is then create new Assignment
      *
      * @return SymbolicExpression the result which can be new Assignment
      */
     public SymbolicExpression assignment() throws IOException {
         SymbolicExpression lhs = expression();
         SymbolicExpression rhs = null;
-        
+
         while(this.st.nextToken() == '=') {
             rhs = identifier();
             lhs = new Assignment(lhs, rhs);
@@ -83,11 +83,11 @@ public class CalculatorParser {
         this.st.pushBack();
         return lhs;
     }
-    
+
      /**
      * Check if current object is a command. If it is then perform approriate method for that command
      * else throw IOException
-     * 
+     *
      * @return Command the result command
      */
 
@@ -107,8 +107,8 @@ public class CalculatorParser {
     }
 
      /**
-     * Check if a string is a valid identifer from a list of names that is not valid. 
-     * 
+     * Check if a string is a valid identifer from a list of names that is not valid.
+     *
      * @param s the string to check
      * @return boolean true if string is valid, else false
      */
@@ -118,11 +118,11 @@ public class CalculatorParser {
         }
         return true;
     }
-    
+
 
      /**
      * Check is current object is a word and if it is valid. If it is then check if it is a namedConstant or a new variable
-     * 
+     *
      * @return Variable the variable which is either a new variable or a aleady existing namedConstant
      */
     public SymbolicExpression identifier() throws IOException {
@@ -134,11 +134,11 @@ public class CalculatorParser {
         }
         throw new SyntaxErrorException("Invalid identifier");
     }
-    
+
      /**
      * Sends current object to term method and then checks the next object.
      * If object is either '+' or '-' then send third object to term method and then use appropriate mathematical method
-     * 
+     *
      * @return SymbolicExpression the result
      */
     public SymbolicExpression expression() throws IOException {
@@ -160,10 +160,10 @@ public class CalculatorParser {
      /**
      * Sends current object to factor mathod and then checks if the next object is either * or /.
      * If it is then use apporopriate mathimatical method and send the third object to factor method.
-     * 
-     * 
+     *
+     *
      * @return SymbolicExpression the result
-     * 
+     *
      */
     /// This method works like expression, but with factors and * instead of terms and +/-
     private SymbolicExpression term() throws IOException {
@@ -181,11 +181,11 @@ public class CalculatorParser {
         st.pushBack();
         return result;
     }
-    
+
 
      /**
      * Check what object StreamTokenizer is standing on. Then use apporpriate method on that object.
-     * 
+     *
      * @return SymbolicExpression the result of the method used on the object.
      * @see number
      * @see identifier
@@ -193,15 +193,26 @@ public class CalculatorParser {
      */
     private SymbolicExpression factor() throws IOException {
         SymbolicExpression result;
-        /// If we encounter a (, we know we are reading a full expression, so we call back up 
-        /// to that method, and then try to read a closing ) at the end 
+        /// If we encounter a (, we know we are reading a full expression, so we call back up
+        /// to that method, and then try to read a closing ) at the end
+
         if (this.st.nextToken() == '(') {
             result = assignment();
             /// This captures unbalanced parentheses!
             if (this.st.nextToken() != ')') {
                 throw new SyntaxErrorException("expected ')'");
             }
-        } else {
+          }
+        //this.st.pushBack();
+        else if(this.st.ttype == '{'){
+          result = scope();
+          if(this.st.nextToken() != '}'){
+            throw new SyntaxErrorException("expected '}");
+          } else {
+            return new Scope(result);
+          }
+        }
+        else {
             int token = this.st.ttype;
             switch(token) {
                 //TT_NUMBER
@@ -212,11 +223,17 @@ public class CalculatorParser {
             default: this.st.pushBack(); try {result = unary();}
                 catch(SyntaxErrorException e) {result = identifier();} break;
             }
-            
+
         }
         return result;
     }
-    
+
+    private SymbolicExpression scope() throws IOException{
+//      SymbolicExpression result;
+      return assignment();
+
+    }
+
      /**
      * Check if StreamTokenizer is standing on a word. If check what unary class the word represents
      * else throw exception
@@ -231,7 +248,7 @@ public class CalculatorParser {
             }
             throw new SyntaxErrorException("Expected unary operation");
         }
-        
+
         Unary result = null;
         String functionName = this.st.sval;
         switch(functionName) {
@@ -249,8 +266,8 @@ public class CalculatorParser {
 
      /**
      * Check if StreamTokenizer is standing on a number. If it is return that number as constant else throw exception
-     *  
-     * @return Constant the number 
+     *
+     * @return Constant the number
      */
     private Constant number() throws IOException {
         if (this.st.nextToken() == this.st.TT_NUMBER) {

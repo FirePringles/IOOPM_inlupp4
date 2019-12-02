@@ -85,6 +85,12 @@ public class NamedConstantChecker implements Visitor{
   public SymbolicExpression visit(Variable a){
     return a;
   }
+
+  public SymbolicExpression visit(Scope a){
+    a.getExp().accept(this);
+    return a;
+  }
+
   public SymbolicExpression visit(Vars a){
     throw new IllegalExpressionException("Cannot check types of Command class");
   }

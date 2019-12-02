@@ -52,7 +52,7 @@ public class Calculator {
                 if(result.isCommand()) {
                     command((Command) result);
                 } else {
-                    if(checker.checkNamedConstant(result, env)){// && reassChecker.reassignedCheck(result, env)){
+                    if(checker.checkNamedConstant(result, env) && reassChecker.reassignedCheck(result, env)){
                       result = evaluator.evaluate(result, env);
                       System.out.println("eval: " + result);
                       //(new Assignment(result, ans)).eval(Calculator.env);

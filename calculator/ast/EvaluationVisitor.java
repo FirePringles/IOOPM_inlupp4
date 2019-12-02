@@ -32,7 +32,7 @@ public class EvaluationVisitor implements Visitor {
 
     public SymbolicExpression visit(Assignment n){
       SymbolicExpression lhs = n.getLHS().accept(this);
-      SymbolicExpression rhs = n.getRHS().accept(this);
+      SymbolicExpression rhs = n.getRHS();
 
       this.env.put((Variable)rhs, lhs);
 
@@ -135,7 +135,7 @@ public class EvaluationVisitor implements Visitor {
           return env.get(n).accept(this);
       }
       else {
-          return new Variable(n.toString());
+          return n;//new Variable(n.toString());
       }
     }
 

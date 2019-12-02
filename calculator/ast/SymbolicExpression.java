@@ -16,6 +16,14 @@ public abstract class SymbolicExpression {
     }
 
 
+    public boolean isNamedConstant(){
+      return false;
+    }
+
+    public String getConstName(){
+      throw new RuntimeException("Can only be used on named constants");
+    }
+
     /**
      * Tells whether the object is a command and therefore cannot be evaluated.
      * This means that the .eval() method cannot be used

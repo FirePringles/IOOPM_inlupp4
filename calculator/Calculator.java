@@ -33,7 +33,8 @@ public class Calculator {
         env = new Environment();
         final Variable ans = new Variable("ans");
         final EvaluationVisitor evaluator = new EvaluationVisitor();
-
+        final NamedConstantChecker checker = new NamedConstantChecker();
+        final ReassignmentChecker reassChecker = new ReassignmentChecker();
         Scanner sc = new Scanner(System.in);
         String input;
         SymbolicExpression result;
@@ -51,11 +52,13 @@ public class Calculator {
                 if(result.isCommand()) {
                     command((Command) result);
                 } else {
-                    result = evaluator.evaluate(result, env);
-                    System.out.println("eval: " + result);
-                    //(new Assignment(result, ans)).eval(Calculator.env);
-                    env.put((Variable) ans, result);
-                    Calculator.successfulCommands++;
+                    if(checker.checkNamedConstant(result, env)){// && reassChecker.reassignedCheck(result, env)){
+                      result = evaluator.evaluate(result, env);
+                      System.out.println("eval: " + result);
+                      //(new Assignment(result, ans)).eval(Calculator.env);
+                      env.put((Variable) ans, result);
+                      Calculator.successfulCommands++;
+                    }
                     if(result.isConstant()) {
                         Calculator.fullyEvaluatedCommands++;
                     }

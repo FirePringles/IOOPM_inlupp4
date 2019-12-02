@@ -34,10 +34,6 @@ public class EvaluationVisitor implements Visitor {
       SymbolicExpression lhs = n.getLHS().accept(this);
       SymbolicExpression rhs = n.getRHS().accept(this);
 
-      if(rhs instanceof NamedConstant) {
-          throw new IllegalExpressionException("Cannot reassign constant");
-      }
-
       this.env.put((Variable)rhs, lhs);
 
 

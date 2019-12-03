@@ -2,7 +2,7 @@ package org.ioopm.calculator.ast;
 
 /** Represents a named variable.
 */
-public class Variable extends Atom implements Visitable {
+public class Variable extends Atom {
     private String identifier;
 
     /**
@@ -14,10 +14,12 @@ public class Variable extends Atom implements Visitable {
         this.identifier = name;
     }
 
+    @Override
     public int getPriority() {
         return -1;
     }
 
+    @Override
     public String toString() {
         return this.identifier;
     }
@@ -39,18 +41,11 @@ public class Variable extends Atom implements Visitable {
      *
      * @return The hash code od the specific identifier
      */
+    @Override
     public int hashCode() {
         return this.identifier.hashCode();
     }
 
-    public SymbolicExpression eval(Environment env) {
-        if(env.containsKey(this)) {
-            return env.get(this).eval(env);
-        }
-        else {
-            return this;
-        }
-    }
     @Override
     public SymbolicExpression accept(Visitor v) {
 	return v.visit(this);

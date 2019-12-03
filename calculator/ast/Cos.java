@@ -2,7 +2,7 @@ package org.ioopm.calculator.ast;
 
 /** Represents the cosine operation.
 */
-public class Cos extends Unary implements Visitable{
+public class Cos extends Unary{
 
     /**
      * Creates a cosine object
@@ -12,22 +12,17 @@ public class Cos extends Unary implements Visitable{
     public Cos(SymbolicExpression x) {
         super(x);
     }
+
+    @Override
     public String getName() {
         return "cos";
     }
 
+    @Override
     public int getPriority() {
         return 25;
     }
 
-    public SymbolicExpression eval(Environment env) {
-        SymbolicExpression e = this.getSubTree().eval(env);
-        this.setSubTree(e);
-        if(e.isConstant()) {
-            return new Constant(Math.cos(e.getValue()));
-        } 
-        return this;
-    }
     @Override
     public SymbolicExpression accept(Visitor v) {
 	return v.visit(this);

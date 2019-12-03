@@ -4,6 +4,7 @@ import org.ioopm.calculator.ast.*;
 import org.ioopm.calculator.parser.*;
 import java.io.IOException;
 import java.util.function.BiConsumer;
+import java.util.Scanner;
 
 public class Calculator {
 
@@ -28,19 +29,21 @@ public class Calculator {
     
     public static void main(String[] args) {
         final CalculatorParser parser = new CalculatorParser();
-        final Environment env = new Environment();
+        env = new Environment();
         final Variable ans = new Variable("ans");
+	final EvaluationVisitor evaluator = new EvaluationVisitor();
 
-
+	Scanner sc = new Scanner(System.in);
         String input;
         SymbolicExpression result;
 
         Calculator.env = new Environment();
+	
         while(true) {
             System.out.print("Please enter an expression: ");
             try {
-                input = System.console().readLine();
-                result = parser.parse(input + "\n");
+                
+                result = parser.parse(sc.nextLine() + "\n");
 
                 Calculator.commands++;
                 
@@ -48,9 +51,9 @@ public class Calculator {
                     command((Command) result);
                 } else {
                     System.out.println("tree: " + result);
-                    result = result.eval(Calculator.env);
+                    result = evaluator.evaluate(result, env);
                     System.out.println("eval: " + result);
-                    (new Assignment(result, ans)).eval(Calculator.env);
+                    //(new Assignment(result, ans)).eval(Calculator.env);
                     Calculator.successfulCommands++;
                     if(result.isConstant()) {
                         Calculator.fullyEvaluatedCommands++;

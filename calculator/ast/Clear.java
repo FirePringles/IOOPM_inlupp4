@@ -2,7 +2,7 @@ package org.ioopm.calculator.ast;
 
 /** Represents the clear command.
 */
-public class Clear extends Command implements Visitable {
+public class Clear extends Command{
     private static final Clear theInstance = new Clear();
     private Clear() {}
 
@@ -14,8 +14,9 @@ public class Clear extends Command implements Visitable {
     public static Clear instance() {
         return theInstance;
     }
+    
     @Override
     public SymbolicExpression accept(Visitor v) {
-	return v.visit(this);
+        throw new RuntimeException("Can't be visited for eval");
     }
 }

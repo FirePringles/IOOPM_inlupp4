@@ -2,7 +2,7 @@ package org.ioopm.calculator.ast;
 
 /** Represents the vars command.
 */
-public class Vars extends Command implements Visitable {
+public class Vars extends Command {
     private static final Vars theInstance = new Vars();
     private Vars() {}
 
@@ -16,6 +16,6 @@ public class Vars extends Command implements Visitable {
     }
     @Override
     public SymbolicExpression accept(Visitor v) {
-	return v.visit(this);
+	throw new RuntimeException("Can't be visted by eval");
     }
 }

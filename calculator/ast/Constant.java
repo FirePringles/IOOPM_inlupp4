@@ -2,7 +2,7 @@ package org.ioopm.calculator.ast;
 
 /** Represents a constant.
 */
-public class Constant extends Atom implements Visitable {
+public class Constant extends Atom {
     private double value;
 
     /**
@@ -14,18 +14,22 @@ public class Constant extends Atom implements Visitable {
         this.value = val;
     }
 
+    @Override
     public boolean isConstant() {
         return true;
     }
 
+    @Override
     public int getPriority() {
         return -1;
     }
 
+    @Override
     public double getValue() {
         return this.value;
     }
 
+    @Override
     public String toString() {
         return String.valueOf(this.value);
     }
@@ -52,10 +56,7 @@ public class Constant extends Atom implements Visitable {
             return false;
         }
     }
-
-    public SymbolicExpression eval(Environment env) {
-        return new Constant(this.getValue());
-    }
+    
     @Override
     public SymbolicExpression accept(Visitor v) {
 	return v.visit(this);

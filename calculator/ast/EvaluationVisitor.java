@@ -5,7 +5,7 @@ public class EvaluationVisitor implements Visitor{
 
   public SymbolicExpression evaluate(SymbolicExpression topLevel, Environment env){
       this.env = env;
-    return topLevel.accept(this);
+      return topLevel.accept(this);
   }
 
   public SymbolicExpression visit(Addition n){
@@ -56,10 +56,12 @@ public class EvaluationVisitor implements Visitor{
       throw new IllegalExpressionException("Cannot resign this named constant");
     }
 
+    this.env.put((Variable)right,left);
+
     if(left.isConstant()){
       return new Constant(left.getValue());
     } else {
-      return new Assignment(left,right);
+	return left;
     }
   }
   public SymbolicExpression visit(Cos n){
@@ -118,7 +120,7 @@ public class EvaluationVisitor implements Visitor{
     if(env.containsKey(n)){
       return env.get(n).accept(this);
     }
-    return new Variable(n.getName());
+    return new Variable(n.toString());
   }
   public SymbolicExpression visit(NamedConstant n){
     return new Variable(n.getName()); //Dodge

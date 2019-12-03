@@ -87,4 +87,6 @@ public abstract class SymbolicExpression {
      * @return      Whether the two syntax trees are equal or not
      */
     public boolean equals(Object other) {return false;}
+
+    public abstract SymbolicExpression accept(Visitor v);
 }

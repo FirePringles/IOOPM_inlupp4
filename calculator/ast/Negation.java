@@ -13,25 +13,22 @@ public class Negation extends Unary implements Visitable {
     public Negation(SymbolicExpression x) {
         super(x);
     }
+
+    @Override
     public String getName() {
         return "-";
     }
 
+    @Override
     public int getPriority() {
         return 100;
     }
 
+    @Override
     public String toString() {
         return this.getName() + "(" + this.getSubTree().toString() + ")";
     }
 
-    public SymbolicExpression eval(Environment env) {
-        SymbolicExpression e = this.getSubTree().eval(env);
-        if(e.isConstant()) {
-            return new Constant(-(e.getValue()));
-        } 
-        return this;
-    }
     @Override
     public SymbolicExpression accept(Visitor v) {
 	return v.visit(this);

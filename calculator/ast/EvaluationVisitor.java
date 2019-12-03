@@ -39,10 +39,9 @@ public class EvaluationVisitor implements Visitor {
           throw new IllegalExpressionException("Cannot reassign constant");
       }
 
-      lhs = lhs.eval(env);
-      env.put((Variable) rhs, lhs);
-
+      env.put((Variable)rhs,lhs);
       if(lhs.isConstant()) {
+	  
           return new Constant(lhs.getValue());
       }
       return lhs;

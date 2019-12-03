@@ -46,6 +46,7 @@ public class Calculator {
             try {
 
                 result = parser.parse(sc.nextLine() + "\n");
+				     
 
                 Calculator.commands++;
 

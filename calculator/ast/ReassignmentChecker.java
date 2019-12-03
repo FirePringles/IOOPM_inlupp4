@@ -109,4 +109,8 @@ public class ReassignmentChecker implements Visitor{
   public SymbolicExpression visit(Vars a){
     throw new IllegalExpressionException("Cannot check types of Command class");
   }
+
+  public SymbolicExpression visit(Conditional a){
+    return a;
+  }
 }

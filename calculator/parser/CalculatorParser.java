@@ -29,6 +29,37 @@ public class CalculatorParser {
         default: return false;
         }
     }
+
+    private String isConditionalCheck(int c) throws IOException{
+      switch(c){
+        case '<':
+          this.st.nextToken();
+          if(this.st.ttype == '='){
+            return "<=";
+          } else {
+            this.st.pushBack();
+            return "<";
+          }
+        case '>':
+          this.st.nextToken();
+          if(this.st.ttype == '='){
+            return ">=";
+          } else {
+            this.st.pushBack();
+            return ">";
+          }
+
+        case '=':
+          this.st.nextToken();
+          if(this.st.ttype == '='){
+            return "==";
+          } else {
+            throw new SyntaxErrorException("expected '='");
+          }
+        default:
+          throw new SyntaxErrorException("Expected valid conditional");
+      }
+    }
     /**
      * Creates StreamTokenizer of a input string and then send that to the rest of the parser
      *
@@ -50,11 +81,16 @@ public class CalculatorParser {
      * @return SymbolicExpression the result which is either a expression or a command
      */
     private SymbolicExpression top_level() throws IOException {
-        SymbolicExpression result;
-        if(this.st.nextToken() == this.st.TT_WORD && isCommand(this.st.sval)) {
+        SymbolicExpression result = null;
+        if(this.st.nextToken() == this.st.TT_WORD && (isCommand(this.st.sval) || this.st.sval.equals("if"))){
+
+          if(isCommand(this.st.sval)) {
             this.st.pushBack();
             result = command();
-        } else {
+        } else if(this.st.sval.equals("if")){
+            result = conditional();
+        }
+      } else {
             this.st.pushBack();
             result = assignment();
         }
@@ -63,8 +99,8 @@ public class CalculatorParser {
             this.st.pushBack();
             throw new SyntaxErrorException("Expected newline but got " + this.st.nextToken());
         }
-        return result;
-    }
+    return result;
+  }
 
 
      /**
@@ -119,6 +155,46 @@ public class CalculatorParser {
         return true;
     }
 
+
+
+    // Look at this beauty, just makes you wanna cry! Seriously though, we should probably make this look cleaner...
+
+    public SymbolicExpression conditional() throws IOException{
+      SymbolicExpression lhs = identifier();
+      this.st.nextToken();
+      String cond = isConditionalCheck(this.st.ttype);
+      if(cond.equals("<") || cond.equals(">") || cond.equals("<=") || cond.equals("==") || cond.equals(">=")){
+        String typeOfOperation = cond;
+        SymbolicExpression rhs = identifier();
+        if(this.st.nextToken() == '{'){
+          SymbolicExpression assignment1 = assignment();
+          if(this.st.nextToken() == '}'){
+            if(this.st.nextToken() == this.st.TT_WORD && this.st.sval.equals("else")){
+              if(this.st.nextToken() == '{'){
+                  SymbolicExpression assignment2 = assignment();
+                if(this.st.nextToken() == '}'){
+                  return new Conditional(lhs, rhs, assignment1, assignment2, typeOfOperation);
+                } else {
+                  throw new SyntaxErrorException("expected '}'");
+                }
+              } else {
+                throw new SyntaxErrorException("expected '{'");
+              }
+            } else {
+              throw new SyntaxErrorException("expected else");
+            }
+          } else {
+            throw new SyntaxErrorException("expected '}'");
+          }
+        } else {
+          throw new SyntaxErrorException("expected '{'");
+        }
+
+      } else {
+        System.out.println(this.st.sval);
+        throw new SyntaxErrorException("expected 'conditional'");
+      }
+    }
 
      /**
      * Check is current object is a word and if it is valid. If it is then check if it is a namedConstant or a new variable

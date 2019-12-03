@@ -1,6 +1,7 @@
 package org.ioopm.calculator.ast;
 
-import java.util.ArrayList; 
+import java.util.ArrayList;
+import org.ioopm.calculator.parser.SyntaxErrorException;
 
 public class EvaluationVisitor implements Visitor {
     private Environment env = null;
@@ -161,4 +162,50 @@ public class EvaluationVisitor implements Visitor {
       throw new RuntimeException("Can't evaluate vars");
     }
 
+    // This is also another beauty!
+
+    public SymbolicExpression visit(Conditional n){
+
+      SymbolicExpression result = null;
+
+      SymbolicExpression left = n.getLHS().accept(this);
+      SymbolicExpression right = n.getRHS().accept(this);
+
+      if(left.isConstant() && right.isConstant()){
+        if(n.getOperation().equals(">=")){
+          if(left.getValue() >= right.getValue()){
+            result = n.getS1().accept(this);
+          } else {
+            result = n.getS2().accept(this);
+          }
+        } else if(n.getOperation().equals("<=")){
+          if(left.getValue() <= right.getValue()){
+            result = n.getS1().accept(this);
+          } else {
+            result = n.getS2().accept(this);
+          }
+        } else if(n.getOperation().equals(">")){
+          if(left.getValue() > right.getValue()){
+            result = n.getS1().accept(this);
+          } else {
+            result = n.getS2().accept(this);
+          }
+        } else if(n.getOperation().equals("<")){
+          if(left.getValue() < right.getValue()){
+            result = n.getS1().accept(this);
+          } else {
+            result = n.getS2().accept(this);
+          }
+        } else if(n.getOperation().equals("==")){
+          if(left.getValue() == right.getValue()){
+            result = n.getS1().accept(this);
+          } else {
+            result = n.getS2().accept(this);
+          }
+        }
+      } else {
+        throw new SyntaxErrorException("Can't evaluate this, variables needs to have values");
+      }
+      return result;
+    }
 }

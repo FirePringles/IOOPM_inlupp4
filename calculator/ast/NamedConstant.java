@@ -15,4 +15,9 @@ public class NamedConstant extends Constant {
         super(value);
         this.identifier = name;
     }
+
+    @Override
+    public boolean isNamedConstant(){
+	return true;
+    }
 }

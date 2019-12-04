@@ -2,7 +2,7 @@ package org.ioopm.calculator.ast;
 
 /** Represents a named variable.
 */
-public class Variable extends Atom {
+public class Variable extends Atom implements Comparable<Variable>{
     private String identifier;
 
     /**
@@ -28,12 +28,18 @@ public class Variable extends Atom {
         return this.identifier.equals(other.identifier);
     }
 
+    @Override
     public boolean equals(Object other) {
         if(other instanceof Variable) {
             return this.equals((Variable) other);
         } else {
             return false;
         }
+    }
+
+    @Override
+    public int compareTo(Variable var){
+	return this.toString().compareTo(var.toString());
     }
 
     /**

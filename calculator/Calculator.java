@@ -18,8 +18,9 @@ public class Calculator {
             System.out.printf("Commands executed: %s\nCommands successfully evaluated: %s\nFully evaluated commands: %s\n", Calculator.commands, Calculator.successfulCommands, Calculator.fullyEvaluatedCommands);
             System.exit(0);
         } else if(command == Vars.instance()) {
-            BiConsumer<Variable, SymbolicExpression> printer = (var, num)->System.out.println(var+": "+num);
-            Calculator.env.forEach(printer);
+            //BiConsumer<Variable, SymbolicExpression> printer = (var, num)->System.out.println(var+": "+num);
+            //Calculator.env.forEach(printer);
+	    System.out.println(env.toString());
         } else if(command == Clear.instance()) {
             Calculator.env.clear();
         } else {
@@ -32,6 +33,8 @@ public class Calculator {
         env = new Environment();
         final Variable ans = new Variable("ans");
 	final EvaluationVisitor evaluator = new EvaluationVisitor();
+	final NamedConstantChecker namedCheck = new NamedConstantChecker();
+	final ReassignmentChecker reaCheck = new ReassignmentChecker();
 
 	Scanner sc = new Scanner(System.in);
         String input;
@@ -50,11 +53,12 @@ public class Calculator {
                 if(result.isCommand()) {
                     command((Command) result);
                 } else {
-                    System.out.println("tree: " + result);
-                    result = evaluator.evaluate(result, env);
-                    System.out.println("eval: " + result);
-                    //(new Assignment(result, ans)).eval(Calculator.env);
-                    Calculator.successfulCommands++;
+		    if(namedCheck.check(result,env) && reaCheck.reasChecker(result, env)){
+			result = evaluator.evaluate(result, env);
+			System.out.println("eval: " + result);
+			//(new Assignment(result, ans)).eval(Calculator.env);
+			Calculator.successfulCommands++;
+		    }
                     if(result.isConstant()) {
                         Calculator.fullyEvaluatedCommands++;
                     }

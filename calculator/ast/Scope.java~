@@ -1,0 +1,14 @@
+package org.ioopm.calculator.ast;
+
+public class Scope extends SymbolicExpression{
+
+    @Override
+    public String getName() {
+	return " {} ";
+    }
+
+    @Override
+    public SymbolicExpression accept(Visitor v) {
+	return v.visit(this);
+    }
+}

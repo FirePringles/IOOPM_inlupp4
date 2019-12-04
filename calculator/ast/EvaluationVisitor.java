@@ -1,10 +1,15 @@
 package org.ioopm.calculator.ast;
 
-public class EvaluationVisitor implements Visitor{
-  private Environment env = null;
+import java.util.ArrayList;
 
+public class EvaluationVisitor implements Visitor{
+    
+  private Environment env = null;
+    private ArrayList<Environment> stack;
   public SymbolicExpression evaluate(SymbolicExpression topLevel, Environment env){
       this.env = env;
+      this.stack = new ArrayList<Environment>();
+      this.stack.add(0,env);
       return topLevel.accept(this);
   }
 
@@ -50,13 +55,9 @@ public class EvaluationVisitor implements Visitor{
   }
   public SymbolicExpression visit(Assignment n){
     SymbolicExpression left = n.getLHS().accept(this);
-    SymbolicExpression right = n.getRHS().accept(this);
+    SymbolicExpression right = n.getRHS();
 
-    if(right instanceof NamedConstant){
-      throw new IllegalExpressionException("Cannot resign this named constant");
-    }
-
-    this.env.put((Variable)right,left);
+    this.stack.get(0).put((Variable)right,left);
 
     if(left.isConstant()){
       return new Constant(left.getValue());
@@ -117,12 +118,22 @@ public class EvaluationVisitor implements Visitor{
     return new Constant(n.getValue());
   }
   public SymbolicExpression visit(Variable n){
-    if(env.containsKey(n)){
-      return env.get(n).accept(this);
+    for(Environment envs : this.stack){
+        if(envs.containsKey(n)){
+	    return envs.get(n).accept(this);
+	}
     }
-    return new Variable(n.toString());
+      return n;
   }
-  public SymbolicExpression visit(NamedConstant n){
-    return new Variable(n.getName()); //Dodge
+  public SymbolicExpression visit(Scope n){
+      this.stack.add(0, new Environment());
+
+      SymbolicExpression scope = n.getExp().accept(this);
+      
+      System.out.println(scope.toString());
+
+      this.stack.remove(0);
+
+      return scope;
   }
 }

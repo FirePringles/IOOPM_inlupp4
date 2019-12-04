@@ -15,6 +15,10 @@ public abstract class SymbolicExpression {
         return false;
     }
 
+    public boolean isNamedConstant() {
+	return false;
+    }
+
 
     /**
      * Tells whether the object is a command and therefore cannot be evaluated.

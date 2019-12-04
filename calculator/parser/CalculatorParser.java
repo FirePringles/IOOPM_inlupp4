@@ -201,7 +201,15 @@ public class CalculatorParser {
             if (this.st.nextToken() != ')') {
                 throw new SyntaxErrorException("expected ')'");
             }
-        } else {
+        }
+	else if(this.st.ttype == '{'){
+	    result = assignment();
+	    if(this.st.nextToken() != '}'){
+		throw new SyntaxErrorException("expected '}'");
+	    } else {
+		return new Scope(result);
+	    }
+	} else {
             int token = this.st.ttype;
             switch(token) {
                 //TT_NUMBER

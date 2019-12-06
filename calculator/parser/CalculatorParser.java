@@ -50,11 +50,15 @@ public class CalculatorParser {
      * @return SymbolicExpression the result which is either a expression or a command
      */
     private SymbolicExpression top_level() throws IOException {
-        SymbolicExpression result;
-        if(this.st.nextToken() == this.st.TT_WORD && isCommand(this.st.sval)) {
-            this.st.pushBack();
-            result = command();
-        } else {
+        SymbolicExpression result = null;
+        if(this.st.nextToken() == this.st.TT_WORD && (isCommand(this.st.sval) || this.st.sval.equals("if"))) {
+	    if(isCommand(this.st.sval)) {
+		this.st.pushBack();
+		result = command();
+	    }else if(this.st.sval.equals("if")) {
+	       result = conditional();
+             }
+	}else {
             this.st.pushBack();
             result = assignment();
         }        
@@ -64,6 +68,73 @@ public class CalculatorParser {
             throw new SyntaxErrorException("Expected newline but got " + this.st.nextToken());
         }
         return result;
+    }
+
+    private SymbolicExpression conditional() throws IOException{
+	
+	SymbolicExpression res1 = null;
+	SymbolicExpression res2 = null;
+	SymbolicExpression exp1 = factor();
+	this.st.nextToken();
+	String op = isOperation();
+	SymbolicExpression exp2 = factor();
+	this.st.nextToken();
+        if(this.st.ttype == '{'){
+	    res1 = factor();
+	    if(this.st.nextToken() != '}'){
+		throw new SyntaxErrorException("expected '}'");
+	    }
+	}
+
+	if(!(this.st.nextToken() == this.st.TT_WORD && this.st.sval.equals("else"))){
+	    throw new SyntaxErrorException("Expected else");
+	}
+	this.st.nextToken();
+	if(this.st.ttype == '{'){
+	    res2 = factor();
+	    if(this.st.nextToken() != '}'){
+		throw new SyntaxErrorException("expected '}'");
+	    }
+	}
+
+	if(res1 == null || res2 == null){
+	    throw new SyntaxErrorException("Expected brackets for results!");
+	}
+
+	return new Conditional(exp1,op,exp2,res1,res2);	                                           
+    }
+
+    private String isOperation() throws IOException{
+	
+	if(this.st.ttype == '<'){
+	    this.st.nextToken();
+	    if(this.st.ttype == '='){
+		return "<=";
+		    } else {
+		this.st.pushBack();
+		return "<";
+	    }
+	}
+	
+	if(this.st.ttype == '>'){
+	    this.st.nextToken();
+	    if (this.st.ttype == '='){
+		return ">=";
+		    } else {
+		this.st.pushBack();
+		return ">";
+	    }
+	}
+	
+	if(this.st.ttype == '='){
+	    this.st.nextToken();
+	    if(this.st.ttype == '='){
+		return "==";
+	    }
+	} else {
+	    throw new SyntaxErrorException("No Vaild operation!");
+	}
+	return "<";
     }
     
     

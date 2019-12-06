@@ -110,4 +110,8 @@ public class ReassignmentChecker implements Visitor{
       stack.remove(0);
       return a;
   }
+
+    public SymbolicExpression visit(Conditional a) {
+	return a;
+    }
 }

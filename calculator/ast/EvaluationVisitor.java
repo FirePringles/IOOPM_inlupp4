@@ -136,4 +136,51 @@ public class EvaluationVisitor implements Visitor{
 
       return scope;
   }
+
+    public SymbolicExpression visit(Conditional n){
+	SymbolicExpression result = null;
+	
+	SymbolicExpression exp1 = n.getExp1().accept(this);
+	String op = n.getOp();
+	SymbolicExpression exp2 = n.getExp2().accept(this);
+
+	if(exp1.isConstant() && exp2.isConstant()){
+	    if(op.equals("<=")){
+		if(exp1.getValue() <= exp2.getValue()){
+		    result = n.getRes1().accept(this);
+		} else {
+		    result = n.getRes2().accept(this);
+		}
+	    }
+	    if(op.equals(">=")){
+		if(exp1.getValue() >= exp2.getValue()){
+		    result = n.getRes1().accept(this);
+		} else {
+		    result = n.getRes2().accept(this);
+		}
+	    }
+	    if(op.equals("<")){
+		if(exp1.getValue() < exp2.getValue()){
+		    result = n.getRes1().accept(this);
+		} else {
+		    result = n.getRes2().accept(this);
+		}
+	    }
+	    if(op.equals(">")){
+		if(exp1.getValue() > exp2.getValue()){
+		    result = n.getRes1().accept(this);
+		} else {
+		    result = n.getRes2().accept(this);
+		}
+	    }
+	    if(op.equals("==")){
+		if(exp1.getValue() == exp2.getValue()){
+		    result = n.getRes1().accept(this);
+		} else {
+		    result = n.getRes2().accept(this);
+		}
+	    }
+	}
+	return result;
+    }
 }

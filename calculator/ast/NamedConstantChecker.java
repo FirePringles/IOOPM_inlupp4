@@ -95,5 +95,9 @@ public class NamedConstantChecker implements Visitor{
 	a.getExp().accept(this);
 	return a;
     }
+
+    public SymbolicExpression visit(Conditional a){
+        return a;
+    }
   
 }

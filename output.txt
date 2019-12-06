@@ -1,0 +1,19 @@
+Please enter an expression: eval: a + b
+Please enter an expression: eval: 10.0
+Please enter an expression: eval: 11.0
+Please enter an expression: eval: 21.0
+Please enter an expression: eval: 0.1
+Please enter an expression: eval: 0.8935409432921488
+Please enter an expression: eval: -0.8935409432921488
+Please enter an expression: eval: 149.0
+Please enter an expression: eval: 5.003946305945459
+Please enter an expression: eval: sin(Leet)
+Please enter an expression: eval: -0.39998531498835127 + ans
+Please enter an expression: eval: 13.0
+Please enter an expression: Variables: a = 0.1, aa = 13.0, b = 10.0, bb = 13.0, c = 11.0, cc = 13.0, d = 21.0, dd = 13.0, ee = 13.0, ff = 13.0, g = 99.0, p = 149.0, w = 50.0, 
+Please enter an expression: Please enter an expression: Syntax Error: Expected newline but got 40
+Please enter an expression: eval: 1003.0
+Please enter an expression: Syntax Error: Invalid identifier
+Please enter an expression: Commands executed: 16
+Commands successfully evaluated: 13
+Fully evaluated commands: 10

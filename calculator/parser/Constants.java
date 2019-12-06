@@ -10,6 +10,7 @@ public class Constants {
         Constants.namedConstants.put("e",  Math.E);
         Constants.namedConstants.put("Answer", Double.valueOf(42));
         Constants.namedConstants.put("L", 6.022140857e23);
+
     }
 
     public static double  getValue(String name) {

@@ -13,16 +13,19 @@ public class Multiplication extends Binary implements Visitable{
     public Multiplication(SymbolicExpression e1, SymbolicExpression e2) {
         super(e1, e2);
     }
+
+    @Override
     public String getName() {
         return " * ";
     }
 
+    @Override
     public int getPriority() {
         return 50;
     }
 
 
-
+    @Override
     public SymbolicExpression accept(Visitor v){
       return v.visit(this);
     }

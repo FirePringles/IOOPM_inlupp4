@@ -13,10 +13,13 @@ public abstract class Command extends SymbolicExpression {
      * @param       other The syntax tree to compare the current expression to
      * @return      Whether the two syntax trees are equal or not
      */
+
+    @Override
     public boolean equals(Object other) {
         return this.getClass().equals(other.getClass());
     }
 
+    @Override
     public boolean isCommand() {
         return true;
     }

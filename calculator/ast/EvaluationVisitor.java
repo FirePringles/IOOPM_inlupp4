@@ -1,11 +1,17 @@
 package org.ioopm.calculator.ast;
 
+import java.util.ArrayList;
+import org.ioopm.calculator.parser.SyntaxErrorException;
 
 public class EvaluationVisitor implements Visitor {
     private Environment env = null;
 
+    private ArrayList<Environment> stack;
+
     public SymbolicExpression evaluate(SymbolicExpression topLevel, Environment env) {
         this.env = env;
+        this.stack = new ArrayList<Environment>();
+        this.stack.add(0, env);
         return topLevel.accept(this);
     }
 
@@ -33,13 +39,15 @@ public class EvaluationVisitor implements Visitor {
 
     public SymbolicExpression visit(Assignment n){
       SymbolicExpression lhs = n.getLHS().accept(this);
-      SymbolicExpression rhs = n.getRHS().accept(this);
+      SymbolicExpression rhs = n.getRHS();
 
-      if(rhs instanceof NamedConstant) {
-          throw new IllegalExpressionException("Cannot reassign constant");
-      }
+      this.stack.get(0).put((Variable)rhs, lhs);
 
+<<<<<<< HEAD
       env.put((Variable)rhs,lhs);
+=======
+
+>>>>>>> 3a5ad30605d151721f9c631e5a55c7082ff368b0
       if(lhs.isConstant()) {
 	  
           return new Constant(lhs.getValue());
@@ -135,16 +143,74 @@ public class EvaluationVisitor implements Visitor {
     }
 
     public SymbolicExpression visit(Variable n){
-      if(this.env.containsKey(n)) {
-          return env.get(n).accept(this);
+      for(Environment e : this.stack){
+        if(e.containsKey(n)){
+          return e.get(n).accept(this);
+        }
       }
-      else {
-          return new Variable(n.toString());
-      }
+        return n;//new Variable(n.toString());
+    }
+
+    public SymbolicExpression visit(Scope n){
+      // Push on stack
+      this.stack.add(0, new Environment());
+
+      SymbolicExpression exp = n.getExp().accept(this);
+
+      // Pop on stack
+      this.stack.remove(0);
+
+      return exp;
     }
 
     public SymbolicExpression visit(Vars n){
       throw new RuntimeException("Can't evaluate vars");
     }
 
+    // This is also another beauty!
+
+    public SymbolicExpression visit(Conditional n){
+
+      SymbolicExpression result = null;
+
+      SymbolicExpression left = n.getLHS().accept(this);
+      SymbolicExpression right = n.getRHS().accept(this);
+
+      if(left.isConstant() && right.isConstant()){
+        if(n.getOperation().equals(">=")){
+          if(left.getValue() >= right.getValue()){
+            result = n.getS1().accept(this);
+          } else {
+            result = n.getS2().accept(this);
+          }
+        } else if(n.getOperation().equals("<=")){
+          if(left.getValue() <= right.getValue()){
+            result = n.getS1().accept(this);
+          } else {
+            result = n.getS2().accept(this);
+          }
+        } else if(n.getOperation().equals(">")){
+          if(left.getValue() > right.getValue()){
+            result = n.getS1().accept(this);
+          } else {
+            result = n.getS2().accept(this);
+          }
+        } else if(n.getOperation().equals("<")){
+          if(left.getValue() < right.getValue()){
+            result = n.getS1().accept(this);
+          } else {
+            result = n.getS2().accept(this);
+          }
+        } else if(n.getOperation().equals("==")){
+          if(left.getValue() == right.getValue()){
+            result = n.getS1().accept(this);
+          } else {
+            result = n.getS2().accept(this);
+          }
+        }
+      } else {
+        throw new SyntaxErrorException("Can't evaluate this, variables needs to have values");
+      }
+      return result;
+    }
 }

@@ -13,14 +13,18 @@ public class Addition extends Binary implements Visitable{
         super(e1, e2);
     }
 
+    @Override
     public String getName() {
         return " + ";
     }
 
+    @Override
     public int getPriority() {
         return 75;
     }
 
+
+    @Override
     public SymbolicExpression accept(Visitor v){
       return v.visit(this);
     }

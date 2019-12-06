@@ -12,14 +12,18 @@ public class Subtraction extends Binary implements Visitable{
     public Subtraction(SymbolicExpression e1, SymbolicExpression e2) {
         super(e1, e2);
     }
+
+    @Override
     public String getName() {
         return " - ";
     }
+
+    @Override
     public int getPriority() {
         return 75;
     }
 
-
+    @Override
     public SymbolicExpression accept(Visitor v){
       return v.visit(this);
     }

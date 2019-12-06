@@ -14,4 +14,9 @@ public class Quit extends Command {
     public static Quit instance() {
         return theInstance;
     }
+
+    @Override
+    public SymbolicExpression accept(Visitor v){
+      throw new RuntimeException("Can't be visited");
+    }
 }

@@ -7,19 +7,19 @@ public class Sin extends Unary {
     public Sin(SymbolicExpression x) {
         super(x);
     }
+
+    @Override
     public String getName() {
         return "sin";
     }
+
+    @Override
     public int getPriority() {
         return 25;
     }
 
-    public SymbolicExpression eval(Environment env) {
-        SymbolicExpression e = this.getSubTree().eval(env);
-        this.setSubTree(e);
-        if(e.isConstant()) {
-            return new Constant(Math.sin(e.getValue()));
-        } 
-        return this;
+    @Override
+    public SymbolicExpression accept(Visitor v){
+      return v.visit(this);
     }
 }

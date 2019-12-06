@@ -23,7 +23,7 @@ public abstract class Unary extends SymbolicExpression{
         return this.sub;
     }
 
-    
+
     /**
      * Sets the subtree of a unary expression
      *
@@ -38,6 +38,7 @@ public abstract class Unary extends SymbolicExpression{
      *
      * @return      The string that represents the syntax tree with correctly added parentheses
      */
+    @Override
     public String toString() {
         return this.getName() + "(" + this.sub.toString() + ")";
     }
@@ -58,6 +59,7 @@ public abstract class Unary extends SymbolicExpression{
      * @param       other The syntax tree to compare the current expression to
      * @return      Whether the two syntax trees are equal or not
      */
+    @Override
     public boolean equals(Object other) {
         if(!(other instanceof Unary)) {
             return false;

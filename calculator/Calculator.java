@@ -4,6 +4,7 @@ import org.ioopm.calculator.ast.*;
 import org.ioopm.calculator.parser.*;
 import java.io.IOException;
 import java.util.function.BiConsumer;
+import java.util.Scanner;
 
 public class Calculator {
 
@@ -17,48 +18,54 @@ public class Calculator {
             System.out.printf("Commands executed: %s\nCommands successfully evaluated: %s\nFully evaluated commands: %s\n", Calculator.commands, Calculator.successfulCommands, Calculator.fullyEvaluatedCommands);
             System.exit(0);
         } else if(command == Vars.instance()) {
-            BiConsumer<Variable, SymbolicExpression> printer = (var, num)->System.out.println(var+": "+num);
-            Calculator.env.forEach(printer);
+            //BiConsumer<Variable, SymbolicExpression > printer = (var, num)->System.out.println(var+": "+num);
+            //Calculator.env.forEach(printer);
+            System.out.println(env.toString());
         } else if(command == Clear.instance()) {
             Calculator.env.clear();
         } else {
             throw new RuntimeException("Invalid command");
         }
     }
-    
+
     public static void main(String[] args) {
         final CalculatorParser parser = new CalculatorParser();
-        final Environment env = new Environment();
+        env = new Environment();
         final Variable ans = new Variable("ans");
-
-
+        final EvaluationVisitor evaluator = new EvaluationVisitor();
+        final NamedConstantChecker checker = new NamedConstantChecker();
+        final ReassignmentChecker reassChecker = new ReassignmentChecker();
+        Scanner sc = new Scanner(System.in);
         String input;
         SymbolicExpression result;
 
         Calculator.env = new Environment();
+
         while(true) {
             System.out.print("Please enter an expression: ");
             try {
-                input = System.console().readLine();
-                result = parser.parse(input + "\n");
+
+                result = parser.parse(sc.nextLine() + "\n");
 
                 Calculator.commands++;
-                
+
                 if(result.isCommand()) {
                     command((Command) result);
                 } else {
-                    System.out.println("tree: " + result);
-                    result = result.eval(Calculator.env);
-                    System.out.println("eval: " + result);
-                    (new Assignment(result, ans)).eval(Calculator.env);
-                    Calculator.successfulCommands++;
+                    if(checker.checkNamedConstant(result, env) && reassChecker.reassignedCheck(result, env)){
+                      result = evaluator.evaluate(result, env);
+                      System.out.println("eval: " + result);
+                      //(new Assignment(result, ans)).eval(Calculator.env);
+                      env.put((Variable) ans, result);
+                      Calculator.successfulCommands++;
+                    }
                     if(result.isConstant()) {
                         Calculator.fullyEvaluatedCommands++;
                     }
                 }
             } catch(SyntaxErrorException e) {
                 System.out.print("Syntax Error: ");
-                System.out.println(e.getMessage());     
+                System.out.println(e.getMessage());
             } catch(IOException e) {
                 System.err.println("IO Exception!");
             } catch(IllegalExpressionException e) {

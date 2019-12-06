@@ -14,18 +14,22 @@ public class Constant extends Atom {
         this.value = val;
     }
 
+    @Override
     public boolean isConstant() {
         return true;
     }
 
+    @Override
     public int getPriority() {
         return -1;
     }
 
+    @Override
     public double getValue() {
         return this.value;
     }
 
+    @Override
     public String toString() {
         return String.valueOf(this.value);
     }
@@ -45,6 +49,8 @@ public class Constant extends Atom {
      * @param       other The syntax tree to compare the current expression to
      * @return      Whether the two syntax trees are equal or not
      */
+
+    @Override
     public boolean equals(Object other) {
         if(other instanceof Constant) {
             return this.equals((Constant) other);
@@ -53,7 +59,9 @@ public class Constant extends Atom {
         }
     }
 
-    public SymbolicExpression eval(Environment env) {
-        return new Constant(this.getValue());
+    @Override
+    public SymbolicExpression accept(Visitor v){
+      return v.visit(this);
     }
+
 }

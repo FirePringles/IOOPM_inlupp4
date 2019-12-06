@@ -4,7 +4,7 @@ package org.ioopm.calculator.ast;
 */
 public abstract class SymbolicExpression {
 
-    
+
     /**
      * Tells whether the object is a constant and therefore is already evaluated.
      * This means that the .getValue() method can be used.
@@ -15,6 +15,14 @@ public abstract class SymbolicExpression {
         return false;
     }
 
+
+    public boolean isNamedConstant(){
+      return false;
+    }
+
+    public String getConstName(){
+      throw new RuntimeException("Can only be used on named constants");
+    }
 
     /**
      * Tells whether the object is a command and therefore cannot be evaluated.
@@ -87,4 +95,8 @@ public abstract class SymbolicExpression {
      * @return      Whether the two syntax trees are equal or not
      */
     public boolean equals(Object other) {return false;}
+
+
+    public abstract SymbolicExpression accept(Visitor v);
+
 }

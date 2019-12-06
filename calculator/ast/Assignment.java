@@ -13,29 +13,19 @@ public class Assignment extends Binary {
         super(e1, e2);
     }
 
+    @Override
     public String getName() {
         return " := ";
     }
 
+    @Override
     public int getPriority() {
         return 100;
     }
 
-    
-    public SymbolicExpression eval(Environment env) {
-        SymbolicExpression lhs = this.getLHS();
-        SymbolicExpression rhs = this.getRHS();
 
-        if(rhs instanceof NamedConstant) {
-            throw new IllegalExpressionException("Cannot reassign constant");
-        }
-
-        lhs = lhs.eval(env);
-        env.put((Variable) rhs, lhs);
-
-        if(lhs.isConstant()) {
-            return new Constant(lhs.getValue());
-        }
-        return lhs;
+    @Override
+    public SymbolicExpression accept(Visitor v){
+      return v.visit(this);
     }
 }

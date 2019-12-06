@@ -12,21 +12,21 @@ public class Log extends Unary {
     public Log(SymbolicExpression x) {
         super(x);
     }
+
+    @Override
     public String getName() {
         return "log";
     }
 
+
+    @Override
     public int getPriority() {
         return 25;
     }
 
-    
-    public SymbolicExpression eval(Environment env) {
-        SymbolicExpression e = this.getSubTree().eval(env);
-        this.setSubTree(e);
-        if(e.isConstant()) {
-            return new Constant(Math.log(e.getValue()));
-        } 
-        return this;
+
+    @Override
+    public SymbolicExpression accept(Visitor v){
+      return v.visit(this);
     }
 }

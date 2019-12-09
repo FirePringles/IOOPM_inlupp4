@@ -4,6 +4,7 @@ import java.io.StreamTokenizer;
 import java.io.IOException;
 import java.io.StringReader;
 import org.ioopm.calculator.ast.*;
+import java.util.ArrayList;
 
 public class CalculatorParser {
 
@@ -82,13 +83,15 @@ public class CalculatorParser {
      */
     private SymbolicExpression top_level() throws IOException {
         SymbolicExpression result = null;
-        if(this.st.nextToken() == this.st.TT_WORD && (isCommand(this.st.sval) || this.st.sval.equals("if"))){
+        if(this.st.nextToken() == this.st.TT_WORD && this.st.sval.equals("function") || (isCommand(this.st.sval) || this.st.sval.equals("if"))){
 
           if(isCommand(this.st.sval)) {
             this.st.pushBack();
             result = command();
         } else if(this.st.sval.equals("if")){
             result = conditional();
+        } else if(this.st.sval.equals("function")){
+          result = function();
         }
       } else {
             this.st.pushBack();
@@ -100,6 +103,38 @@ public class CalculatorParser {
             throw new SyntaxErrorException("Expected newline but got " + this.st.nextToken());
         }
     return result;
+  }
+
+  public SymbolicExpression function() throws IOException{
+    SymbolicExpression result;
+    String name;
+    ArrayList<SymbolicExpression> parList = new ArrayList<SymbolicExpression>();
+    ArrayList<SymbolicExpression> seqList = new ArrayList<SymbolicExpression>();
+    System.out.println("start av function");
+
+    if(this.st.nextToken() == this.st.TT_WORD){
+      name = this.st.sval;
+      if(this.st.nextToken() == '('){
+        while(this.st.nextToken() != ')'){
+          //this.st.pushBack();
+          parList.add(new Variable(this.st.sval));
+          this.st.nextToken();
+        }
+      } else {
+        throw new SyntaxErrorException("Expected '('");
+      }
+    } else {
+      throw new SyntaxErrorException("Expected function name");
+    }
+
+    this.st.nextToken();
+    while(this.st.nextToken() == this.st.TT_WORD && this.st.sval.equals("end")){
+      System.out.println("i function kroppen");
+      seqList.add(assignment());
+    }
+
+    return new FunctionDeclaration(name, parList, seqList);
+
   }
 
 
@@ -208,6 +243,7 @@ public class CalculatorParser {
             }
             return new Variable(this.st.sval);
         }
+        System.out.println(this.st.sval);
         throw new SyntaxErrorException("Invalid identifier");
     }
 

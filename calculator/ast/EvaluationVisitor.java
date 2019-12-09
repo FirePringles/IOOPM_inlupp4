@@ -1,7 +1,6 @@
 package org.ioopm.calculator.ast;
 
 import java.util.ArrayList;
-import org.ioopm.calculator.parser.SyntaxErrorException;
 
 public class EvaluationVisitor implements Visitor {
     private Environment env = null;
@@ -204,8 +203,13 @@ public class EvaluationVisitor implements Visitor {
           }
         }
       } else {
-        throw new SyntaxErrorException("Can't evaluate this, variables needs to have values");
+        throw new RuntimeException("Can't evaluate this, variables needs to have values");
       }
       return result;
     }
+
+    public SymbolicExpression visit(FunctionDeclaration a){
+      return a;
+    }
+
 }

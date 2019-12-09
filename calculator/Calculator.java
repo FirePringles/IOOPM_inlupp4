@@ -18,8 +18,6 @@ public class Calculator {
             System.out.printf("Commands executed: %s\nCommands successfully evaluated: %s\nFully evaluated commands: %s\n", Calculator.commands, Calculator.successfulCommands, Calculator.fullyEvaluatedCommands);
             System.exit(0);
         } else if(command == Vars.instance()) {
-            //BiConsumer<Variable, SymbolicExpression > printer = (var, num)->System.out.println(var+": "+num);
-            //Calculator.env.forEach(printer);
             System.out.println(env.toString());
         } else if(command == Clear.instance()) {
             Calculator.env.clear();
@@ -45,7 +43,16 @@ public class Calculator {
             System.out.print("Please enter an expression: ");
             try {
 
-                result = parser.parse(sc.nextLine() + "\n");
+                input = sc.nextLine();
+                if(input.equals("function")){
+                  String funcInput = "";
+                  do{
+                    funcInput = sc.nextLine();
+                    input = input + " " + funcInput + "\n";
+                  } while(!funcInput.equals("end"));
+                }
+                System.out.println(input);
+                result = parser.parse(input + "\n");
 
                 Calculator.commands++;
 
@@ -55,7 +62,6 @@ public class Calculator {
                     if(checker.checkNamedConstant(result, env) && reassChecker.reassignedCheck(result, env)){
                       result = evaluator.evaluate(result, env);
                       System.out.println("eval: " + result);
-                      //(new Assignment(result, ans)).eval(Calculator.env);
                       env.put((Variable) ans, result);
                       Calculator.successfulCommands++;
                     }

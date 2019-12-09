@@ -29,12 +29,13 @@ public class Calculator {
         }
     }
 
-    public static void functionDec(FunctionDeclaration func, CalculatorParser parser){
+    public static FunctionDeclaration functionDec(FunctionDeclaration func, CalculatorParser parser){
 	final EvaluationVisitor evaluator = new EvaluationVisitor();
 	
 	boolean looper = true;
 	Scanner sc = new Scanner(System.in);
 	String new_input;
+        ArrayList<FunctionDeclaration> funcDecList = new ArrayList<FunctionDeclaration>();
 
 	while(looper == true){
 	    new_input = sc.nextLine();
@@ -46,7 +47,6 @@ public class Calculator {
 	    SymbolicExpression result = parser.parse(new_input + "\n");
 	    Sequence body = func.getFunctionBody();
 	    body.addToBody(result);
-	    
 	    } catch(SyntaxErrorException e) {
                 System.out.print("Syntax Error: ");
                 System.out.println(e.getMessage());
@@ -56,6 +56,7 @@ public class Calculator {
                 System.out.println(e);
             }
 	}
+	return func;
     }
 
     public static void main(String[] args) {
@@ -68,6 +69,7 @@ public class Calculator {
         Scanner sc = new Scanner(System.in);
         String input;
         SymbolicExpression result;
+	ArrayList<FunctionDeclaration> funcDecList = new ArrayList<FunctionDeclaration>();
 
         Calculator.env = new Environment();
 
@@ -81,7 +83,12 @@ public class Calculator {
                 if(result.isCommand()) {
                     command((Command) result);
                 } else if(result.isFuncDec()){
-		    functionDec((FunctionDeclaration) result, parser);
+		    FunctionDeclaration new_func = functionDec((FunctionDeclaration) result, parser);
+		    funcDecList.add(new_func);
+		    System.out.println(funcDecList.size());
+		    
+		} else if(result.isFunctionCall()){
+		    System.out.println("Hello!");
 		}
 		else {
                     if(checker.checkNamedConstant(result, env) && reassChecker.reassignedCheck(result, env)){

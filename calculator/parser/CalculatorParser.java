@@ -180,7 +180,7 @@ public class CalculatorParser {
      * @return boolean true if string is valid, else false
      */
     private boolean isValidIdentifier(String s) {
-        if(isCommand(s) || isUnary(s)) {
+        if(isCommand(s) || isUnary(s) || s.equals("function") || s.equals("end")) {
             return false;
         }
         return true;

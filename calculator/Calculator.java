@@ -5,6 +5,7 @@ import org.ioopm.calculator.parser.*;
 import java.io.IOException;
 import java.util.function.BiConsumer;
 import java.util.Scanner;
+import java.util.ArrayList;
 
 public class Calculator {
 
@@ -12,6 +13,7 @@ public class Calculator {
     private static int commands = 0;
     private static int successfulCommands = 0;
     private static int fullyEvaluatedCommands = 0;
+    private static ArrayList<FunctionDeclaration> functions = new ArrayList<FunctionDeclaration>();
 
     private static void command(Command command) {
         if(command == Quit.instance()) {
@@ -42,22 +44,29 @@ public class Calculator {
         while(true) {
             System.out.print("Please enter an expression: ");
             try {
-
                 input = sc.nextLine();
-                if(input.equals("function")){
+                result = parser.parse(input + "\n");
+                Calculator.commands++;
+                // For functions
+                if(result.isFunctionDec()){
                   String funcInput = "";
                   do{
                     funcInput = sc.nextLine();
-                    input = input + " " + funcInput + "\n";
+                    result.addToSeqList(parser.parse(funcInput + "\n"));
+                    System.out.println("in: " + funcInput);
                   } while(!funcInput.equals("end"));
+
+                  functions.add((FunctionDeclaration) result);
+
                 }
-                System.out.println(input);
-                result = parser.parse(input + "\n");
 
-                Calculator.commands++;
+                // System.out.println(input);
 
-                if(result.isCommand()) {
+                // For commands
+                else if(result.isCommand()) {
                     command((Command) result);
+
+                // For the rest
                 } else {
                     if(checker.checkNamedConstant(result, env) && reassChecker.reassignedCheck(result, env)){
                       result = evaluator.evaluate(result, env);

@@ -103,4 +103,8 @@ public class NamedConstantChecker implements Visitor{
     return a;
   }
 
+  public SymbolicExpression visit(FunctionCall a){
+    return a;
+  }
+
 }

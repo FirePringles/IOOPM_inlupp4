@@ -212,4 +212,8 @@ public class EvaluationVisitor implements Visitor {
       return a;
     }
 
+    public SymbolicExpression visit(FunctionCall a){
+      return a;
+    }
+
 }

@@ -96,7 +96,15 @@ public abstract class SymbolicExpression {
      */
     public boolean equals(Object other) {return false;}
 
-
     public abstract SymbolicExpression accept(Visitor v);
+
+    public boolean isFunctionDec(){
+      return false;
+    }
+
+    public void addToSeqList(SymbolicExpression s){
+      throw new RuntimeException("Can only be used by FunctionDeclaration");
+    }
+
 
 }

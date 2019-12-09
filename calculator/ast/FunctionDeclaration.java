@@ -13,7 +13,16 @@ public class FunctionDeclaration extends SymbolicExpression{
     this.name = name;
     this.parList = parList;
     this.seqList = seqList;
+  }
 
+  @Override
+  public void addToSeqList(SymbolicExpression s){
+    this.seqList.add(s);
+  }
+
+  @Override
+  public boolean isFunctionDec(){
+    return true;
   }
 
   @Override

@@ -1,5 +1,7 @@
 package org.ioopm.calculator.ast;
 
+import java.util.ArrayList;
+
 /** Represents an abstract syntax tree.
 */
 public abstract class SymbolicExpression {
@@ -22,6 +24,17 @@ public abstract class SymbolicExpression {
 
     public boolean isFunctionCall(){
 	return false;
+    }
+
+    public int getArgLen(){
+      throw new RuntimeException("Can only be called from FunctionDeclaration");
+    }
+
+    public ArrayList<Constant> getFunctionArgs(){
+      throw new RuntimeException("Can only be called on function");
+    }
+    public String getFunctionName(){
+      throw new RuntimeException("Can only be called on function");
     }
 
     public String getConstName(){

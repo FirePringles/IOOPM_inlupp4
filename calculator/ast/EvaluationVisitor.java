@@ -4,11 +4,21 @@ import java.util.ArrayList;
 
 public class EvaluationVisitor implements Visitor {
     private Environment env = null;
-
+    private ArrayList<Constant> funcConstants;
     private ArrayList<Environment> stack;
+
 
     public SymbolicExpression evaluate(SymbolicExpression topLevel, Environment env) {
         this.env = env;
+        this.stack = new ArrayList<Environment>();
+        this.stack.add(0, env);
+        return topLevel.accept(this);
+    }
+
+
+    public SymbolicExpression evaluate(SymbolicExpression topLevel, Environment env, ArrayList<Constant> funcConstants) {
+        this.env = env;
+        this.funcConstants = funcConstants;
         this.stack = new ArrayList<Environment>();
         this.stack.add(0, env);
         return topLevel.accept(this);
@@ -37,197 +47,211 @@ public class EvaluationVisitor implements Visitor {
     }
 
     public SymbolicExpression visit(Assignment n){
-      SymbolicExpression lhs = n.getLHS().accept(this);
-      SymbolicExpression rhs = n.getRHS();
+        SymbolicExpression lhs = n.getLHS().accept(this);
+        SymbolicExpression rhs = n.getRHS();
 
-      this.stack.get(0).put((Variable)rhs, lhs);
+        this.stack.get(0).put((Variable)rhs, lhs);
 
 
-      if(lhs.isConstant()) {
-          return new Constant(lhs.getValue());
-      }
-      return lhs;
+        if(lhs.isConstant()) {
+            return new Constant(lhs.getValue());
+        }
+        return lhs;
     }
 
     public SymbolicExpression visit(Constant n){
-      return n;
+        return n;
     }
 
     public SymbolicExpression visit(Cos n){
-      SymbolicExpression e = n.getSubTree().accept(this);
-      if(e.isConstant()) {
-          return new Constant(Math.cos(e.getValue()));
-      }
-      return new Cos(e);
+        SymbolicExpression e = n.getSubTree().accept(this);
+        if(e.isConstant()) {
+            return new Constant(Math.cos(e.getValue()));
+        }
+        return new Cos(e);
     }
 
     public SymbolicExpression visit(Division n){
 
-      SymbolicExpression lhs = n.getLHS().accept(this);
-      SymbolicExpression rhs = n.getRHS().accept(this);
+        SymbolicExpression lhs = n.getLHS().accept(this);
+        SymbolicExpression rhs = n.getRHS().accept(this);
 
-      if(lhs.isConstant() && rhs.isConstant()) {
-          //Yes, I know you can't compare doubles like this
-          //But such are the problems with rounding and computation
-          if(rhs.getValue() == 0) {
-              throw new IllegalExpressionException("Seriously, don't divide by zero...");
-          }
-          return new Constant(lhs.getValue() / rhs.getValue());
-      }
-      return new Division(lhs, rhs);
+        if(lhs.isConstant() && rhs.isConstant()) {
+            //Yes, I know you can't compare doubles like this
+            //But such are the problems with rounding and computation
+            if(rhs.getValue() == 0) {
+                throw new IllegalExpressionException("Seriously, don't divide by zero...");
+            }
+            return new Constant(lhs.getValue() / rhs.getValue());
+        }
+        return new Division(lhs, rhs);
 
     }
 
     public SymbolicExpression visit(Exp n){
-      SymbolicExpression e = n.getSubTree().accept(this);
-      if(e.isConstant()) {
-          return new Constant(Math.exp(e.getValue()));
-      }
-      return new Exp(e);
+        SymbolicExpression e = n.getSubTree().accept(this);
+        if(e.isConstant()) {
+            return new Constant(Math.exp(e.getValue()));
+        }
+        return new Exp(e);
     }
 
     public SymbolicExpression visit(Log n){
-      SymbolicExpression e = n.getSubTree().accept(this);
-      if(e.isConstant()) {
-          return new Constant(Math.log(e.getValue()));
-      }
-      return new Log(e);
+        SymbolicExpression e = n.getSubTree().accept(this);
+        if(e.isConstant()) {
+            return new Constant(Math.log(e.getValue()));
+        }
+        return new Log(e);
     }
 
     public SymbolicExpression visit(Multiplication n){
-      SymbolicExpression lhs = n.getLHS().accept(this);
-      SymbolicExpression rhs = n.getRHS().accept(this);
+        SymbolicExpression lhs = n.getLHS().accept(this);
+        SymbolicExpression rhs = n.getRHS().accept(this);
 
-      if(lhs.isConstant() && rhs.isConstant()) {
-          return new Constant(lhs.getValue() * rhs.getValue());
-      }
-      return new Multiplication(lhs, rhs);
+        if(lhs.isConstant() && rhs.isConstant()) {
+            return new Constant(lhs.getValue() * rhs.getValue());
+        }
+        return new Multiplication(lhs, rhs);
     }
 
     public SymbolicExpression visit(Negation n){
-      SymbolicExpression e = n.getSubTree().accept(this);
-      if(e.isConstant()) {
-          return new Constant(-(e.getValue()));
-      }
-      return new Negation(e);
+        SymbolicExpression e = n.getSubTree().accept(this);
+        if(e.isConstant()) {
+            return new Constant(-(e.getValue()));
+        }
+        return new Negation(e);
     }
 
     public SymbolicExpression visit(Quit n){
-      throw new RuntimeException("Can't evaluate vars");
+        throw new RuntimeException("Can't evaluate vars");
     }
 
     public SymbolicExpression visit(Sin n){
-      SymbolicExpression e = n.getSubTree().accept(this);
-      if(e.isConstant()) {
-          return new Constant(Math.sin(e.getValue()));
-      }
-      return new Sin(e);
+        SymbolicExpression e = n.getSubTree().accept(this);
+        if(e.isConstant()) {
+            return new Constant(Math.sin(e.getValue()));
+        }
+        return new Sin(e);
     }
 
     public SymbolicExpression visit(Subtraction n){
 
-      SymbolicExpression lhs = n.getLHS().accept(this);
-      SymbolicExpression rhs = n.getRHS().accept(this);
+        SymbolicExpression lhs = n.getLHS().accept(this);
+        SymbolicExpression rhs = n.getRHS().accept(this);
 
-      if(lhs.isConstant() && rhs.isConstant()) {
-          return new Constant(lhs.getValue() - rhs.getValue());
-      }
-      return new Subtraction(lhs, rhs);
+        if(lhs.isConstant() && rhs.isConstant()) {
+            return new Constant(lhs.getValue() - rhs.getValue());
+        }
+        return new Subtraction(lhs, rhs);
 
     }
 
     public SymbolicExpression visit(Variable n){
-      for(Environment e : this.stack){
-        if(e.containsKey(n)){
-          return e.get(n).accept(this);
+        for(Environment e : this.stack){
+            if(e.containsKey(n)){
+                return e.get(n).accept(this);
+            }
         }
-      }
         return n;//new Variable(n.toString());
     }
 
     public SymbolicExpression visit(Scope n){
-      // Push on stack
-      this.stack.add(0, new Environment());
+        // Push on stack
+        this.stack.add(0, new Environment());
 
-      SymbolicExpression exp = n.getExp().accept(this);
+        SymbolicExpression exp = n.getExp().accept(this);
 
-      // Pop on stack
-      this.stack.remove(0);
+        // Pop on stack
+        this.stack.remove(0);
 
-      return exp;
+        return exp;
     }
 
     public SymbolicExpression visit(Vars n){
-      throw new RuntimeException("Can't evaluate vars");
+        throw new RuntimeException("Can't evaluate vars");
     }
 
     // This is also another beauty!
 
     public SymbolicExpression visit(Conditional n){
 
-      SymbolicExpression result = null;
+        SymbolicExpression result = null;
 
-      SymbolicExpression left = n.getLHS().accept(this);
-      SymbolicExpression right = n.getRHS().accept(this);
+        SymbolicExpression left = n.getLHS().accept(this);
+        SymbolicExpression right = n.getRHS().accept(this);
 
-      if(left.isConstant() && right.isConstant()){
-        if(n.getOperation().equals(">=")){
-          if(left.getValue() >= right.getValue()){
-            result = n.getS1().accept(this);
-          } else {
-            result = n.getS2().accept(this);
-          }
-        } else if(n.getOperation().equals("<=")){
-          if(left.getValue() <= right.getValue()){
-            result = n.getS1().accept(this);
-          } else {
-            result = n.getS2().accept(this);
-          }
-        } else if(n.getOperation().equals(">")){
-          if(left.getValue() > right.getValue()){
-            result = n.getS1().accept(this);
-          } else {
-            result = n.getS2().accept(this);
-          }
-        } else if(n.getOperation().equals("<")){
-          if(left.getValue() < right.getValue()){
-            result = n.getS1().accept(this);
-          } else {
-            result = n.getS2().accept(this);
-          }
-        } else if(n.getOperation().equals("==")){
-          if(left.getValue() == right.getValue()){
-            result = n.getS1().accept(this);
-          } else {
-            result = n.getS2().accept(this);
-          }
+        if(left.isConstant() && right.isConstant()){
+            if(n.getOperation().equals(">=")){
+                if(left.getValue() >= right.getValue()){
+                    result = n.getS1().accept(this);
+                } else {
+                    result = n.getS2().accept(this);
+                }
+            } else if(n.getOperation().equals("<=")){
+                if(left.getValue() <= right.getValue()){
+                    result = n.getS1().accept(this);
+                } else {
+                    result = n.getS2().accept(this);
+                }
+            } else if(n.getOperation().equals(">")){
+                if(left.getValue() > right.getValue()){
+                    result = n.getS1().accept(this);
+                } else {
+                    result = n.getS2().accept(this);
+                }
+            } else if(n.getOperation().equals("<")){
+                if(left.getValue() < right.getValue()){
+                    result = n.getS1().accept(this);
+                } else {
+                    result = n.getS2().accept(this);
+                }
+            } else if(n.getOperation().equals("==")){
+                if(left.getValue() == right.getValue()){
+                    result = n.getS1().accept(this);
+                } else {
+                    result = n.getS2().accept(this);
+                }
+            }
+        } else {
+            throw new RuntimeException("Can't evaluate this, variables needs to have values");
         }
-      } else {
-        throw new RuntimeException("Can't evaluate this, variables needs to have values");
-      }
-      return result;
+        return result;
     }
 
     public SymbolicExpression visit(FunctionDeclaration n){
-	SymbolicExpression sequence = n.getFunctionBody().accept(this);
-	return sequence;
+        this.stack.add(0, new Environment());
+        ArrayList<Variable> vars = n.getFunctionPara();
+
+        System.out.println(vars + " " + funcConstants);
+
+        for(int i = 0; i < vars.size(); i++){
+          this.stack.get(0).put(vars.get(i), this.funcConstants.get(i));
+        }
+
+        SymbolicExpression sequence = n.getFunctionBody().accept(this);
+        this.funcConstants = null;
+        this.stack.remove(0);
+
+        return sequence;
     }
 
     public SymbolicExpression visit(Sequence n){
-	ArrayList<SymbolicExpression> body = n.getBody();
-	SymbolicExpression result = null;
-	for(int i = 0; i<n.getBodySize(); i++){
-	    result = body.get(i).accept(this);
-	}
-	return result;
+        ArrayList<SymbolicExpression> body = n.getBody();
+        SymbolicExpression result = null;
+        for(int i = 0; i<n.getBodySize()-1; i++){
+            result = body.get(i).accept(this);
+        }
+        return result;
     }
 
     public SymbolicExpression visit(FunctionCall n){
-	ArrayList<Constant> arguments = n.getFunctionArgs();
-	SymbolicExpression result = null;
+        ArrayList<Constant> arguments = n.getFunctionArgs();
+
+        SymbolicExpression result = null;
       	for(int i = 0; i<n.getArgumentsSize(); i++){
-	    result = arguments.get(i).accept(this);
-	}
-	return result;
+            result = arguments.get(i).accept(this);
+        }
+
+        return result;
     }
 }

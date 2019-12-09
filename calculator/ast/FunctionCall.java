@@ -7,34 +7,43 @@ public class FunctionCall extends SymbolicExpression{
     ArrayList<Constant> arguments;
 
     public FunctionCall(String name, ArrayList<Constant> arguments){
-	this.name = name;
-	this.arguments = arguments;
+        this.name = name;
+        this.arguments = arguments;
     }
 
     @Override
     public boolean isFunctionCall(){
-	return true;
+        return true;
     }
 
     @Override
     public String getName(){
-	return "FunctionCall";
+        return "FunctionCall";
     }
 
-    public String getFuncName(){
-	return this.name;
+    @Override
+    public String getFunctionName(){
+        return this.name;
     }
 
     public ArrayList<Constant> getFunctionArgs(){
-	return this.arguments;
+        return this.arguments;
     }
 
     public int getArgumentsSize(){
-	return this.arguments.size();
+        return this.arguments.size();
     }
-					    
+
+
+    @Override
+    public int getArgLen(){
+      return this.arguments.size();
+    }
+
     @Override
     public SymbolicExpression accept(Visitor v){
-	return v.visit(this);
+        return v.visit(this);
     }
+
+
 }

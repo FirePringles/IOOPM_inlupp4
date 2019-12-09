@@ -113,4 +113,16 @@ public class ReassignmentChecker implements Visitor{
   public SymbolicExpression visit(Conditional a){
     return a;
   }
+
+    public SymbolicExpression visit(FunctionDeclaration a){
+	return a;
+    }
+
+    public SymbolicExpression visit(Sequence a){
+	return a;
+    }
+
+    public SymbolicExpression visit(FunctionCall a){
+	return a;
+    }
 }

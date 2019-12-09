@@ -16,7 +16,7 @@ calculator: ast parser
 
 ast:
 	javac -cp bin/ -d bin/ calculator/ast/*.java
-parser:
+parser: ast
 	javac -cp bin/ -d bin/ calculator/parser/*.java
 
 clean:

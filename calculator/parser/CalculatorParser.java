@@ -4,6 +4,7 @@ import java.io.StreamTokenizer;
 import java.io.IOException;
 import java.io.StringReader;
 import org.ioopm.calculator.ast.*;
+import java.util.ArrayList;
 
 public class CalculatorParser {
 
@@ -82,14 +83,16 @@ public class CalculatorParser {
      */
     private SymbolicExpression top_level() throws IOException {
         SymbolicExpression result = null;
-        if(this.st.nextToken() == this.st.TT_WORD && (isCommand(this.st.sval) || this.st.sval.equals("if"))){
+        if(this.st.nextToken() == this.st.TT_WORD && (isCommand(this.st.sval) || this.st.sval.equals("if") || this.st.sval.equals("function"))){
 
           if(isCommand(this.st.sval)) {
             this.st.pushBack();
             result = command();
         } else if(this.st.sval.equals("if")){
             result = conditional();
-        }
+	  } else if(this.st.sval.equals("function")){
+	    result = functionDec();
+	}
       } else {
             this.st.pushBack();
             result = assignment();
@@ -102,6 +105,34 @@ public class CalculatorParser {
     return result;
   }
 
+
+    public SymbolicExpression functionDec() throws IOException{
+	String funcName;
+	ArrayList<Variable> parameters = new ArrayList<>();
+	if (this.st.nextToken() == st.TT_WORD){
+	    funcName = this.st.sval;
+	} else {
+	    throw new SyntaxErrorException("Expected function name");
+	}
+        if (this.st.nextToken() == '(') {
+	    boolean paraLoop = true;
+            while(paraLoop == true){
+		if(this.st.nextToken() == ')'){
+		    paraLoop = false;
+		}
+		else if(this.st.ttype == ','){
+		    this.st.nextToken();
+		}
+		else {
+		    parameters.add(new Variable(this.st.sval));
+		}
+	    }
+	} else {
+	    throw new SyntaxErrorException("Expected parameters");
+	}
+	Sequence seq = new Sequence(new ArrayList<SymbolicExpression>());
+	return new FunctionDeclaration(funcName,parameters,seq);
+    }
 
      /**
      * Check if object after current object is a '=' and if it is then create new Assignment

@@ -20,6 +20,10 @@ public abstract class SymbolicExpression {
       return false;
     }
 
+    public boolean isFunctionCall(){
+	return false;
+    }
+
     public String getConstName(){
       throw new RuntimeException("Can only be used on named constants");
     }
@@ -32,6 +36,10 @@ public abstract class SymbolicExpression {
      */
     public boolean isCommand() {
         return false;
+    }
+
+    public boolean isFuncDec() {
+	return false;
     }
 
 

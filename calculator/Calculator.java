@@ -5,6 +5,7 @@ import org.ioopm.calculator.parser.*;
 import java.io.IOException;
 import java.util.function.BiConsumer;
 import java.util.Scanner;
+import java.util.ArrayList;
 
 public class Calculator {
 
@@ -28,6 +29,35 @@ public class Calculator {
         }
     }
 
+    public static void functionDec(FunctionDeclaration func, CalculatorParser parser){
+	final EvaluationVisitor evaluator = new EvaluationVisitor();
+	
+	boolean looper = true;
+	Scanner sc = new Scanner(System.in);
+	String new_input;
+
+	while(looper == true){
+	    new_input = sc.nextLine();
+	    if(new_input.equals("end"))
+		{
+		    looper = false;
+		}
+	    try{
+	    SymbolicExpression result = parser.parse(new_input + "\n");
+	    Sequence body = func.getFunctionBody();
+	    body.addToBody(result);
+	    
+	    } catch(SyntaxErrorException e) {
+                System.out.print("Syntax Error: ");
+                System.out.println(e.getMessage());
+            } catch(IOException e) {
+                System.err.println("IO Exception!");
+            } catch(IllegalExpressionException e) {
+                System.out.println(e);
+            }
+	}
+    }
+
     public static void main(String[] args) {
         final CalculatorParser parser = new CalculatorParser();
         env = new Environment();
@@ -44,18 +74,19 @@ public class Calculator {
         while(true) {
             System.out.print("Please enter an expression: ");
             try {
-
-                result = parser.parse(sc.nextLine() + "\n");
-
+		input = sc.nextLine();
+		result = parser.parse(input + "\n");
                 Calculator.commands++;
 
                 if(result.isCommand()) {
                     command((Command) result);
-                } else {
+                } else if(result.isFuncDec()){
+		    functionDec((FunctionDeclaration) result, parser);
+		}
+		else {
                     if(checker.checkNamedConstant(result, env) && reassChecker.reassignedCheck(result, env)){
                       result = evaluator.evaluate(result, env);
-                      System.out.println("eval: " + result);
-                      //(new Assignment(result, ans)).eval(Calculator.env);
+                      System.out.println("eval: " + result);                
                       env.put((Variable) ans, result);
                       Calculator.successfulCommands++;
                     }

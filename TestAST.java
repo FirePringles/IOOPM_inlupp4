@@ -3,6 +3,7 @@ import junit.framework.TestCase;
 import static org.junit.Assert.*;
 import org.ioopm.calculator.ast.*;
 import java.io.*;
+import java.util.ArrayList;
 
 public class TestAST extends TestCase {
         //Addition
@@ -268,6 +269,249 @@ public class TestAST extends TestCase {
     public void testVariableGetPrio() {
 	Variable var = new Variable("x");
 	assertEquals(-1,var.getPriority());
+    }
+
+          //FunctionCall
+    @Test
+    public void testFunctionCallIsCall(){
+	ArrayList<Atom> arguments = new ArrayList<Atom>();
+	FunctionCall call = new FunctionCall("x",arguments);
+	assertTrue(call.isFunctionCall());
+    }
+    @Test
+    public void testFunctionCallIsConstant() {
+        ArrayList<Atom> arguments = new ArrayList<Atom>();
+	FunctionCall call = new FunctionCall("x",arguments);
+	assertFalse(call.isConstant());
+    }
+    @Test
+    public void testFunctionCallIsCommand() {
+        ArrayList<Atom> arguments = new ArrayList<Atom>();
+	FunctionCall call = new FunctionCall("x",arguments);
+	assertFalse(call.isCommand());
+    }
+    @Test
+    public void testFunctionCallGetPrio() {
+        ArrayList<Atom> arguments = new ArrayList<Atom>();
+	FunctionCall call = new FunctionCall("x",arguments);
+	assertEquals(0,call.getPriority());
+    }
+    @Test
+    public void testFunctionCallGetName() {
+        ArrayList<Atom> arguments = new ArrayList<Atom>();
+	FunctionCall call = new FunctionCall("x",arguments);
+	assertEquals("FunctionCall",call.getName());
+    }
+    @Test
+    public void testFunctionCallGetFunctionName() {
+        ArrayList<Atom> arguments = new ArrayList<Atom>();
+	FunctionCall call = new FunctionCall("x",arguments);
+	assertEquals("x",call.getFunctionName());
+    }
+    @Test
+    public void testFunctionCallGetFunctionArgs() {
+        ArrayList<Atom> arguments = new ArrayList<Atom>();
+	FunctionCall call = new FunctionCall("x",arguments);
+	assertEquals(arguments,call.getFunctionArgs());
+    }
+    @Test
+    public void testFunctionCallGetArgumentsSize() {
+        ArrayList<Atom> arguments = new ArrayList<Atom>();
+	FunctionCall call = new FunctionCall("x",arguments);
+	assertEquals(0,call.getPriority());
+    }
+
+       //FunctionDeclaration
+    @Test
+    public void testFunctionDeclarationGetName() {
+	ArrayList<Variable> params = new ArrayList<Variable>();
+
+	ArrayList<SymbolicExpression> body = new ArrayList<SymbolicExpression>();
+	Sequence seq = new Sequence(body);
+
+	FunctionDeclaration dec = new FunctionDeclaration("x",params,seq);
+	assertEquals("function",dec.getName());
+    }
+
+    @Test
+    public void testFunctionDeclarationIsFuncDec() {
+	ArrayList<Variable> params = new ArrayList<Variable>();
+
+	ArrayList<SymbolicExpression> body = new ArrayList<SymbolicExpression>();
+	Sequence seq = new Sequence(body);
+
+	FunctionDeclaration dec = new FunctionDeclaration("x",params,seq);
+	assertTrue(dec.isFuncDec());
+    }
+    @Test
+    public void testFunctionDeclarationGetFunctionName() {
+	ArrayList<Variable> params = new ArrayList<Variable>();
+
+	ArrayList<SymbolicExpression> body = new ArrayList<SymbolicExpression>();
+	Sequence seq = new Sequence(body);
+
+	FunctionDeclaration dec = new FunctionDeclaration("x",params,seq);
+	assertEquals("x",dec.getFunctionName());
+    }
+    @Test
+    public void testFunctionDeclarationGetFunctionPara() {
+	ArrayList<Variable> params = new ArrayList<Variable>();
+
+	ArrayList<SymbolicExpression> body = new ArrayList<SymbolicExpression>();
+	Sequence seq = new Sequence(body);
+
+	FunctionDeclaration dec = new FunctionDeclaration("x",params,seq);
+	assertEquals(params,dec.getFunctionPara());
+    }
+    @Test
+    public void testFunctionDeclarationGetArgLen() {
+	ArrayList<Variable> params = new ArrayList<Variable>();
+
+	ArrayList<SymbolicExpression> body = new ArrayList<SymbolicExpression>();
+	Sequence seq = new Sequence(body);
+
+	FunctionDeclaration dec = new FunctionDeclaration("x",params,seq);
+	assertEquals(0,dec.getArgLen());
+    }
+    @Test
+    public void testFunctionDeclarationIsConstant() {
+	ArrayList<Variable> params = new ArrayList<Variable>();
+
+	ArrayList<SymbolicExpression> body = new ArrayList<SymbolicExpression>();
+	Sequence seq = new Sequence(body);
+
+	FunctionDeclaration dec = new FunctionDeclaration("x",params,seq);
+	assertFalse(dec.isConstant());
+    }
+    @Test
+    public void testFunctionDeclarationIsNamedConstant() {
+	ArrayList<Variable> params = new ArrayList<Variable>();
+
+	ArrayList<SymbolicExpression> body = new ArrayList<SymbolicExpression>();
+	Sequence seq = new Sequence(body);
+
+	FunctionDeclaration dec = new FunctionDeclaration("x",params,seq);
+	assertFalse(dec.isNamedConstant());
+    }
+        @Test
+    public void testFunctionDeclarationIsCommand() {
+	ArrayList<Variable> params = new ArrayList<Variable>();
+
+	ArrayList<SymbolicExpression> body = new ArrayList<SymbolicExpression>();
+	Sequence seq = new Sequence(body);
+
+	FunctionDeclaration dec = new FunctionDeclaration("x",params,seq);
+	assertFalse(dec.isCommand());
+    }
+        @Test
+    public void testFunctionDeclarationIsFunctionCall() {
+	ArrayList<Variable> params = new ArrayList<Variable>();
+
+	ArrayList<SymbolicExpression> body = new ArrayList<SymbolicExpression>();
+	Sequence seq = new Sequence(body);
+
+	FunctionDeclaration dec = new FunctionDeclaration("x",params,seq);
+	assertFalse(dec.isFunctionCall());
+    }
+    @Test
+    public void testFunctionDeclarationGetPriority() {
+	ArrayList<Variable> params = new ArrayList<Variable>();
+
+	ArrayList<SymbolicExpression> body = new ArrayList<SymbolicExpression>();
+	Sequence seq = new Sequence(body);
+
+	FunctionDeclaration dec = new FunctionDeclaration("x",params,seq);
+	assertEquals(0,dec.getPriority());
+    }
+
+
+       //Scope
+    @Test
+    public void testScopeIsConstant(){
+	SymbolicExpression exp = new Variable("x");
+	Scope scope = new Scope(exp);
+	assertFalse(scope.isConstant());
+    }
+    @Test
+    public void testScopeIsNamedConstant(){
+	SymbolicExpression exp = new Variable("x");
+	Scope scope = new Scope(exp);
+	assertFalse(scope.isNamedConstant());
+    }
+    @Test
+    public void testScopeIsFunctionCall(){
+	SymbolicExpression exp = new Variable("x");
+	Scope scope = new Scope(exp);
+	assertFalse(scope.isFunctionCall());
+    }
+    @Test
+    public void testScopeIsCommand(){
+	SymbolicExpression exp = new Variable("x");
+	Scope scope = new Scope(exp);
+	assertFalse(scope.isCommand());
+    }
+    @Test
+    public void testScopeIsFuncDec(){
+	SymbolicExpression exp = new Variable("x");
+	Scope scope = new Scope(exp);
+	assertFalse(scope.isFuncDec());
+    }
+    @Test
+    public void testScopeGetPriority(){
+	SymbolicExpression exp = new Variable("x");
+	Scope scope = new Scope(exp);
+	assertEquals(0,scope.getPriority());
+    }
+
+
+       //Sequence
+    @Test
+    public void testSequenceIsConstant(){
+        ArrayList<SymbolicExpression> body = new ArrayList<SymbolicExpression>();
+	Sequence seq = new Sequence(body);
+	assertFalse(seq.isConstant());
+    }
+    @Test
+    public void testSequenceIsNamedConstant(){
+        ArrayList<SymbolicExpression> body = new ArrayList<SymbolicExpression>();
+	Sequence seq = new Sequence(body);
+	assertFalse(seq.isNamedConstant());
+    }
+    @Test
+    public void testSequenceIsFunctionCall(){
+        ArrayList<SymbolicExpression> body = new ArrayList<SymbolicExpression>();
+	Sequence seq = new Sequence(body);
+	assertFalse(seq.isFunctionCall());
+    }
+    @Test
+    public void testSequenceIsCommand(){
+        ArrayList<SymbolicExpression> body = new ArrayList<SymbolicExpression>();
+	Sequence seq = new Sequence(body);
+	assertFalse(seq.isCommand());
+    }
+    @Test
+    public void testSequenceIsFuncDec(){
+        ArrayList<SymbolicExpression> body = new ArrayList<SymbolicExpression>();
+	Sequence seq = new Sequence(body);
+	assertFalse(seq.isFuncDec());
+    }
+    @Test
+    public void testSequenceGetPriority(){
+        ArrayList<SymbolicExpression> body = new ArrayList<SymbolicExpression>();
+	Sequence seq = new Sequence(body);
+	assertEquals(0,seq.getPriority());
+    }
+    @Test
+    public void testSequenceGetBody(){
+        ArrayList<SymbolicExpression> body = new ArrayList<SymbolicExpression>();
+	Sequence seq = new Sequence(body);
+	assertEquals(body,seq.getBody());
+    }
+    @Test
+    public void testSequenceGetBodySize(){
+        ArrayList<SymbolicExpression> body = new ArrayList<SymbolicExpression>();
+	Sequence seq = new Sequence(body);
+	assertEquals(0,seq.getBodySize());
     }
 
 

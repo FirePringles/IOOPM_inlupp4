@@ -119,10 +119,14 @@ public class CalculatorParser {
             while(paraLoop == true){
               if(this.st.nextToken() == ')'){
                 paraLoop = false;
-              } else if(this.st.ttype == this.st.TT_WORD){
+              } else if(this.st.ttype == ',') {
+	      } else if(this.st.ttype == this.st.TT_WORD){
                   parameters.add(new Variable(this.st.sval));
-              }
+              } else {
+		  throw new SyntaxErrorException("Something is wrong here");
+	      }
             }
+	    System.out.println(parameters.size());
         } else {
             throw new SyntaxErrorException("Expected parameters");
         }
@@ -186,43 +190,72 @@ public class CalculatorParser {
 
     // Look at this beauty, just makes you wanna cry! Seriously though, we should probably make this look cleaner...
 
-    public SymbolicExpression conditional() throws IOException{
-        SymbolicExpression lhs = identifier();
-        this.st.nextToken();
-        String cond = isConditionalCheck(this.st.ttype);
-        if(cond.equals("<") || cond.equals(">") || cond.equals("<=") || cond.equals("==") || cond.equals(">=")){
-            String typeOfOperation = cond;
-            SymbolicExpression rhs = identifier();
-            if(this.st.nextToken() == '{'){
-                SymbolicExpression assignment1 = assignment();
-                if(this.st.nextToken() == '}'){
-                    if(this.st.nextToken() == this.st.TT_WORD && this.st.sval.equals("else")){
-                        if(this.st.nextToken() == '{'){
-                            SymbolicExpression assignment2 = assignment();
-                            if(this.st.nextToken() == '}'){
-                                return new Conditional(lhs, rhs, assignment1, assignment2, typeOfOperation);
-                            } else {
-                                throw new SyntaxErrorException("expected '}'");
-                            }
-                        } else {
-                            throw new SyntaxErrorException("expected '{'");
-                        }
-                    } else {
-                        throw new SyntaxErrorException("expected else");
-                    }
-                } else {
-                    throw new SyntaxErrorException("expected '}'");
-                }
-            } else {
-                throw new SyntaxErrorException("expected '{'");
-            }
+    private SymbolicExpression conditional() throws IOException{
 
-        } else {
-            System.out.println(this.st.sval);
-            throw new SyntaxErrorException("expected 'conditional'");
-        }
+	SymbolicExpression res1 = null;
+	SymbolicExpression res2 = null;
+	SymbolicExpression exp1 = factor();
+	this.st.nextToken();
+	String op = isOperation();
+	SymbolicExpression exp2 = factor();
+	this.st.nextToken();
+        if(this.st.ttype == '{'){
+	    res1 = assignment();
+	    if(this.st.nextToken() != '}'){
+		throw new SyntaxErrorException("expected '}'");
+	    }
+	}
+
+	if(!(this.st.nextToken() == this.st.TT_WORD && this.st.sval.equals("else"))){
+	    throw new SyntaxErrorException("Expected else");
+	}
+	this.st.nextToken();
+	if(this.st.ttype == '{'){
+	    res2 = assignment();
+	    if(this.st.nextToken() != '}'){
+		throw new SyntaxErrorException("expected '}'");
+	    }
+	}
+
+	if(res1 == null || res2 == null){
+	    throw new SyntaxErrorException("Expected brackets for results!");
+	}
+
+	return new Conditional(exp1,exp2,res1,res2,op);	                                           
     }
 
+    private String isOperation() throws IOException{
+
+	if(this.st.ttype == '<'){
+	    this.st.nextToken();
+	    if(this.st.ttype == '='){
+		return "<=";
+		    } else {
+		this.st.pushBack();
+		return "<";
+	    }
+	}
+
+	if(this.st.ttype == '>'){
+	    this.st.nextToken();
+	    if (this.st.ttype == '='){
+		return ">=";
+		    } else {
+		this.st.pushBack();
+		return ">";
+	    }
+	}
+
+	if(this.st.ttype == '='){
+	    this.st.nextToken();
+	    if(this.st.ttype == '='){
+		return "==";
+	    }
+	} else {
+	    throw new SyntaxErrorException("No Vaild operation!");
+	}
+	return "<";
+    }
     /**
      * Check is current object is a word and if it is valid. If it is then check if it is a namedConstant or a new variable
      *

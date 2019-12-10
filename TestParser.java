@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 import org.ioopm.calculator.ast.*;
 import java.io.*;
 import org.ioopm.calculator.parser.*;
+import java.util.ArrayList;
 
 
 public class TestParser extends TestCase {
@@ -142,7 +143,7 @@ public class TestParser extends TestCase {
     assertEquals(vars, varsParsed);
 
   }
-
+  @Test
   public void testNamedConstants() throws IOException{
     CalculatorParser parser = new CalculatorParser();
 
@@ -156,6 +157,48 @@ public class TestParser extends TestCase {
      assertTrue(pi.equals(piParsed));
      assertTrue(e.equals(eParsed));
 
+  }
+  @Test
+  public void testFunctionDec() throws IOException{
+      CalculatorParser parser = new CalculatorParser();
+      ArrayList<Variable> para = new ArrayList<Variable>();
+
+      ArrayList<SymbolicExpression> body = new ArrayList<SymbolicExpression>();
+      Sequence seq = new Sequence(body);
+
+      SymbolicExpression func = new FunctionDeclaration("x",para,seq);
+      SymbolicExpression funcParsed = parser.parse("function x()\n");
+
+      //Måste fixa equals
+      assertTrue(func.equals(funcParsed));
+	  
+  }
+  @Test
+  public void testFunctionCall() throws IOException{
+      CalculatorParser parser = new CalculatorParser();
+      ArrayList<Atom> arg = new ArrayList<Atom>();
+
+      SymbolicExpression funcCall = new FunctionCall("x",arg);
+      SymbolicExpression funcCallParsed = parser.parse("x()\n");
+
+      assertTrue(funcCall.equals(funcCallParsed));
+	  
+  }
+  @Test
+  public void testConditional() throws IOException{
+      CalculatorParser parser = new CalculatorParser();
+      SymbolicExpression exp1 = new Constant(2);
+      SymbolicExpression exp2 = new Constant(1);
+      SymbolicExpression res1 = new Constant(2);
+      SymbolicExpression res2 = new Constant(1);
+      String op = "<";
+
+      
+      SymbolicExpression cond = new Conditional(exp1,exp2,res1,res2,op);
+      SymbolicExpression condParsed = parser.parse("if 2 < 1 {2} else {1}\n");
+
+      assertTrue(cond.equals(condParsed));
+	  
   }
 
 }

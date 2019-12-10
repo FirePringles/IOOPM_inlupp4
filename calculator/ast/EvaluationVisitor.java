@@ -242,11 +242,11 @@ public class EvaluationVisitor implements Visitor {
         this.funcConstants = n.getFunctionArgs();
 
 
-        if(this.funcDecList.containsKey(name)){
+        if(this.funcDecList.containsKey(name) && (this.funcDecList.get(n.getFunctionName()).getArgLen() == n.getArgLen())){
           result = funcDecList.get(name).accept(this);
           this.funcConstants = null;
         } else {
-           throw new RuntimeException("Cant evalute");
+           throw new IllegalExpressionException("That function does not exist or the arguments are wrong");
          }
 
         this.stack.remove(0);

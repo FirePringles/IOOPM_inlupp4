@@ -30,7 +30,7 @@ public abstract class SymbolicExpression {
       throw new RuntimeException("Can only be called from FunctionDeclaration");
     }
 
-    public ArrayList<Constant> getFunctionArgs(){
+    public ArrayList<Atom> getFunctionArgs(){
       throw new RuntimeException("Can only be called on function");
     }
     public String getFunctionName(){

@@ -235,7 +235,7 @@ public class CalculatorParser {
                 return new NamedConstant(this.st.sval, Constants.getValue(this.st.sval));
             }
             if(this.st.nextToken() == '('){
-              ArrayList<Constant> argList = new ArrayList<Constant>();
+              ArrayList<Atom> argList = new ArrayList<Atom>();
               boolean loop = true;
               this.st.nextToken();
               while(loop){
@@ -243,6 +243,9 @@ public class CalculatorParser {
                 argList.add(new Constant(this.st.nval));
                 this.st.nextToken();
 
+              } else if(this.st.ttype == this.st.TT_WORD){
+                argList.add(new Variable(this.st.sval));
+                this.st.nextToken();
               } else if(this.st.ttype == ','){
                 this.st.nextToken();
               } else if(this.st.ttype == ')'){

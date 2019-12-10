@@ -46,8 +46,7 @@ public class Calculator {
 
             try {
                 SymbolicExpression result = parser.parse(new_input + "\n");
-                Sequence body = func.getFunctionBody();
-                body.addToBody(result);
+                func.getFunctionBody().addToBody(result);
             } catch(SyntaxErrorException e) {
                 System.out.print("Syntax Error: ");
                 System.out.println(e.getMessage());
@@ -88,17 +87,15 @@ public class Calculator {
                     funcDecList.put(new_func.getFunctionName(), new_func);
 
                 } else if(result.isFunctionCall()){
-                  if(funcDecList.containsKey(result.getFunctionName()) && (funcDecList.get(result.getFunctionName()).getArgLen() == result.getArgLen())){
-                    result = evaluator.evaluate(funcDecList.get(result.getFunctionName()), env, result.getFunctionArgs());
+                    System.out.println("function call");
+                    result = evaluator.evaluate(result, env, funcDecList);
                     System.out.println("eval: " + result);
                     env.put((Variable) ans, result);
-                  } else {
-                    throw new RuntimeException("Wrong name or arguments");
-                  }
+
                 }
                 else {
                     if(checker.checkNamedConstant(result, env) && reassChecker.reassignedCheck(result, env)){
-                        result = evaluator.evaluate(result, env);
+                        result = evaluator.evaluate(result, env, funcDecList);
                         System.out.println("eval: " + result);
                         env.put((Variable) ans, result);
                         Calculator.successfulCommands++;

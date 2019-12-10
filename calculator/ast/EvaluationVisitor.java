@@ -1,24 +1,19 @@
 package org.ioopm.calculator.ast;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class EvaluationVisitor implements Visitor {
     private Environment env = null;
-    private ArrayList<Constant> funcConstants;
+    private ArrayList<Atom> funcConstants;
     private ArrayList<Environment> stack;
+    private HashMap<String, FunctionDeclaration> funcDecList;
 
 
-    public SymbolicExpression evaluate(SymbolicExpression topLevel, Environment env) {
+
+    public SymbolicExpression evaluate(SymbolicExpression topLevel, Environment env, HashMap<String, FunctionDeclaration> funcDecList) {
         this.env = env;
-        this.stack = new ArrayList<Environment>();
-        this.stack.add(0, env);
-        return topLevel.accept(this);
-    }
-
-
-    public SymbolicExpression evaluate(SymbolicExpression topLevel, Environment env, ArrayList<Constant> funcConstants) {
-        this.env = env;
-        this.funcConstants = funcConstants;
+        this.funcDecList = funcDecList;
         this.stack = new ArrayList<Environment>();
         this.stack.add(0, env);
         return topLevel.accept(this);
@@ -219,18 +214,13 @@ public class EvaluationVisitor implements Visitor {
     }
 
     public SymbolicExpression visit(FunctionDeclaration n){
-        this.stack.add(0, new Environment());
         ArrayList<Variable> vars = n.getFunctionPara();
-
-        System.out.println(vars + " " + funcConstants);
 
         for(int i = 0; i < vars.size(); i++){
           this.stack.get(0).put(vars.get(i), this.funcConstants.get(i));
-        }
 
+        }
         SymbolicExpression sequence = n.getFunctionBody().accept(this);
-        this.funcConstants = null;
-        this.stack.remove(0);
 
         return sequence;
     }
@@ -245,13 +235,22 @@ public class EvaluationVisitor implements Visitor {
     }
 
     public SymbolicExpression visit(FunctionCall n){
-        ArrayList<Constant> arguments = n.getFunctionArgs();
+        this.stack.add(0, new Environment());
 
-        SymbolicExpression result = null;
-      	for(int i = 0; i<n.getArgumentsSize(); i++){
-            result = arguments.get(i).accept(this);
-        }
+        SymbolicExpression result;
+        String name = n.getFunctionName();
+        this.funcConstants = n.getFunctionArgs();
 
+
+        if(this.funcDecList.containsKey(name)){
+          result = funcDecList.get(name).accept(this);
+          this.funcConstants = null;
+        } else {
+           throw new RuntimeException("Cant evalute");
+         }
+
+        this.stack.remove(0);
         return result;
     }
+
 }

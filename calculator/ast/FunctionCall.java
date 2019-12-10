@@ -4,9 +4,9 @@ import java.util.ArrayList;
 
 public class FunctionCall extends SymbolicExpression{
     String name;
-    ArrayList<Constant> arguments;
+    ArrayList<Atom> arguments;
 
-    public FunctionCall(String name, ArrayList<Constant> arguments){
+    public FunctionCall(String name, ArrayList<Atom> arguments){
         this.name = name;
         this.arguments = arguments;
     }
@@ -26,7 +26,7 @@ public class FunctionCall extends SymbolicExpression{
         return this.name;
     }
 
-    public ArrayList<Constant> getFunctionArgs(){
+    public ArrayList<Atom> getFunctionArgs(){
         return this.arguments;
     }
 

@@ -2,7 +2,7 @@ run: all
 	java -cp bin/ org.ioopm.calculator.Calculator
 
 run_file: all
-	java -cp bin/ org.ioopm.calculator.Calculator < test.txt > output.txt
+	java -cp bin/ org.ioopm.calculator.Calculator < test.txt
 
 
 all: ast parser calculator

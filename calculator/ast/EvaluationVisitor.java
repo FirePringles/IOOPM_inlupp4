@@ -217,8 +217,7 @@ public class EvaluationVisitor implements Visitor {
         ArrayList<Variable> vars = n.getFunctionPara();
 	
         for(int i = 0; i < vars.size(); i++){
-          this.stack.get(0).put(vars.get(i+1), this.funcConstants.get(i));
-
+	    this.stack.get(0).put(vars.get(i), this.funcConstants.get(i).accept(this));
         }
         SymbolicExpression sequence = n.getFunctionBody().accept(this);
 
@@ -227,7 +226,7 @@ public class EvaluationVisitor implements Visitor {
 
     public SymbolicExpression visit(Sequence n){
         ArrayList<SymbolicExpression> body = n.getBody();
-        SymbolicExpression result = null;
+        SymbolicExpression result = new Constant(0);
         for(int i = 0; i<n.getBodySize()-1; i++){
             result = body.get(i).accept(this);
         }
@@ -239,15 +238,14 @@ public class EvaluationVisitor implements Visitor {
         SymbolicExpression result;
         String name = n.getFunctionName();
         this.funcConstants = n.getFunctionArgs();
-	System.out.println(this.funcConstants);
 
         if(this.funcDecList.containsKey(name) && (this.funcDecList.get(n.getFunctionName()).getArgLen() == n.getArgLen())){
           result = funcDecList.get(name).accept(this);
-          this.funcConstants = null;
+
         } else {
            throw new IllegalExpressionException("That function does not exist or the arguments are wrong");
          }
-
+	this.funcConstants = null;
         this.stack.remove(0);
         return result;
     }

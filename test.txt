@@ -3,8 +3,6 @@ n-1=m + "\n"
 if n > 1 {fa(m) * n} else {1} + "\n"
 end + "\n"
 
-fa(4) + "\n"
-end + "\n"
+fa(4)
 
-
-quit + "\n"
+quit

@@ -215,9 +215,9 @@ public class EvaluationVisitor implements Visitor {
 
     public SymbolicExpression visit(FunctionDeclaration n){
         ArrayList<Variable> vars = n.getFunctionPara();
-
+	
         for(int i = 0; i < vars.size(); i++){
-          this.stack.get(0).put(vars.get(i), this.funcConstants.get(i));
+          this.stack.get(0).put(vars.get(i+1), this.funcConstants.get(i));
 
         }
         SymbolicExpression sequence = n.getFunctionBody().accept(this);
@@ -236,11 +236,10 @@ public class EvaluationVisitor implements Visitor {
 
     public SymbolicExpression visit(FunctionCall n){
         this.stack.add(0, new Environment());
-
         SymbolicExpression result;
         String name = n.getFunctionName();
         this.funcConstants = n.getFunctionArgs();
-
+	System.out.println(this.funcConstants);
 
         if(this.funcDecList.containsKey(name) && (this.funcDecList.get(n.getFunctionName()).getArgLen() == n.getArgLen())){
           result = funcDecList.get(name).accept(this);

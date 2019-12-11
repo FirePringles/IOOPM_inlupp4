@@ -1,9 +1,9 @@
 function fa(n) + "\n"
-1=x + "\n"
 n-1=m + "\n"
-if n > x {fa(m) * n} else {1} + "\n"
+if n > 1 {fa(m) * n} else {1} + "\n"
 end + "\n"
 
+fa(4) + "\n"
 end + "\n"
 
 

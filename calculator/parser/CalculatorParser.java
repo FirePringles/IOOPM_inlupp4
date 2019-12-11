@@ -13,6 +13,11 @@ public class CalculatorParser {
     public CalculatorParser() {
 
     }
+        /**
+     * Help function for commad to see what command the input string matches.
+     *
+     * @return Boolean. If string is command then return true, else false
+     */
     private boolean isCommand(String word) {
         switch(word) {
         case "quit": return true;
@@ -21,6 +26,12 @@ public class CalculatorParser {
         default: return false;
         }
     }
+
+        /**
+     * Help function for unary to see if string is a valid unary expression
+     *
+     * @return Boolean. If word is a valid unary command then return true, else false.
+     */
     private boolean isUnary(String word) {
         switch(word) {
         case "exp": return true;
@@ -31,36 +42,6 @@ public class CalculatorParser {
         }
     }
 
-    private String isConditionalCheck(int c) throws IOException{
-        switch(c){
-        case '<':
-            this.st.nextToken();
-            if(this.st.ttype == '='){
-                return "<=";
-            } else {
-                this.st.pushBack();
-                return "<";
-            }
-        case '>':
-            this.st.nextToken();
-            if(this.st.ttype == '='){
-                return ">=";
-            } else {
-                this.st.pushBack();
-                return ">";
-            }
-
-        case '=':
-            this.st.nextToken();
-            if(this.st.ttype == '='){
-                return "==";
-            } else {
-                throw new SyntaxErrorException("expected '='");
-            }
-        default:
-            throw new SyntaxErrorException("Expected valid conditional");
-        }
-    }
     /**
      * Creates StreamTokenizer of a input string and then send that to the rest of the parser
      *
@@ -105,7 +86,11 @@ public class CalculatorParser {
         return result;
     }
 
-
+    /**
+     * Method for creating a FunctionDeclaration object from string input.
+     *
+     * @return SymbolicExpression. The FunctionDeclaration in form of the superclass SymbolicExpression
+     */
     public SymbolicExpression functionDec() throws IOException{
         String funcName;
         ArrayList<Variable> parameters = new ArrayList<>();
@@ -188,32 +173,40 @@ public class CalculatorParser {
 
 
 
-    // Look at this beauty, just makes you wanna cry! Seriously though, we should probably make this look cleaner...
+    /**
+     * Goes throuh the input string and creates a conditional object from that.
+     *
+     * @return SymbolicExpression. The condidtional in form of a SymbolicExpression
+     */
 
     private SymbolicExpression conditional() throws IOException{
 
 	SymbolicExpression res1 = null;
 	SymbolicExpression res2 = null;
-	SymbolicExpression exp1 = factor();
+	SymbolicExpression exp1 = expression();
 	this.st.nextToken();
 	String op = isOperation();
-	SymbolicExpression exp2 = factor();
+	SymbolicExpression exp2 = expression();
 	this.st.nextToken();
         if(this.st.ttype == '{'){
 	    res1 = assignment();
 	    if(this.st.nextToken() != '}'){
-		throw new SyntaxErrorException("expected '}'");
+		throw new SyntaxErrorException("expected '}' for res1");
 	    }
 	}
-
 	if(!(this.st.nextToken() == this.st.TT_WORD && this.st.sval.equals("else"))){
 	    throw new SyntaxErrorException("Expected else");
 	}
 	this.st.nextToken();
 	if(this.st.ttype == '{'){
-	    res2 = assignment();
+	    if(this.st.nextToken() == this.st.TT_WORD && this.st.sval.equals("if")){
+	       res2 = conditional();
+		} else {
+		this.st.pushBack();
+		    res2 = assignment();
+		}
 	    if(this.st.nextToken() != '}'){
-		throw new SyntaxErrorException("expected '}'");
+		throw new SyntaxErrorException("expected 2 '}' for res2");
 	    }
 	}
 
@@ -224,6 +217,11 @@ public class CalculatorParser {
 	return new Conditional(exp1,exp2,res1,res2,op);	                                           
     }
 
+        /**
+     * Help function for conditional. Checks if a string is a valid operation to use in if
+     *
+     * @return String. A valid operation in form of a string.
+     */
     private String isOperation() throws IOException{
 
 	if(this.st.ttype == '<'){
@@ -247,17 +245,18 @@ public class CalculatorParser {
 	}
 
 	if(this.st.ttype == '='){
+	    System.out.println("hej");
 	    this.st.nextToken();
 	    if(this.st.ttype == '='){
 		return "==";
 	    }
 	} else {
-	    throw new SyntaxErrorException("No Vaild operation!");
+	    throw new SyntaxErrorException("No Vaild operation for: " + this.st.sval);
 	}
 	return "<";
     }
     /**
-     * Check is current object is a word and if it is valid. If it is then check if it is a namedConstant or a new variable
+     * Check if current object is a word and if it is valid. If it is then check if it is a namedConstant or a new variable
      *
      * @return Variable the variable which is either a new variable or a aleady existing namedConstant
      */

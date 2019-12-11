@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 import org.ioopm.calculator.ast.*;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class TestAST extends TestCase {
         //Addition
@@ -623,14 +624,16 @@ public class TestAST extends TestCase {
 	Variable v1 = new Variable("x");
 	NamedConstant named = new NamedConstant("new", 52);
 	Environment env = new Environment();
-	assertEquals("1.0",c1.eval(env).toString());
-	assertNotEquals("2.0",c1.eval(env).toString());
+        final EvaluationVisitor evaluator = new EvaluationVisitor();
+	HashMap<String, FunctionDeclaration> funcDecList = new HashMap<>();
+	assertEquals("1.0",evaluator.evaluate(c1,env,funcDecList).toString());
+	assertNotEquals("2.0",evaluator.evaluate(c1,env,funcDecList).toString());
 	
-	assertEquals("x",v1.eval(env).toString());
-	assertNotEquals("y",v1.eval(env).toString());
+	assertEquals("x",evaluator.evaluate(v1,env,funcDecList).toString());
+	assertNotEquals("y",evaluator.evaluate(v1,env,funcDecList).toString());
 	
-	assertEquals("52.0",named.eval(env).toString());
-	assertNotEquals("53.0",named.eval(env).toString());
+	assertEquals("52.0",evaluator.evaluate(named,env,funcDecList).toString());
+	assertNotEquals("53.0",evaluator.evaluate(named,env,funcDecList).toString());
     }
 
     @Test
@@ -644,20 +647,22 @@ public class TestAST extends TestCase {
 	Multiplication mult = new Multiplication(c1,c2);
 	Assignment ass1 = new Assignment(c1,v1);
 	Environment env = new Environment();
-	assertEquals("6.0",add.eval(env).toString());
-	assertNotEquals("7.0",add.eval(env).toString());
+	final EvaluationVisitor evaluator = new EvaluationVisitor();
+	HashMap<String, FunctionDeclaration> funcDecList = new HashMap<>();
+	assertEquals("6.0",evaluator.evaluate(add,env,funcDecList).toString());
+	assertNotEquals("7.0",evaluator.evaluate(add,env,funcDecList).toString());
 	
-	assertEquals("2.0",sub.eval(env).toString());
-	assertNotEquals("6.0",sub.eval(env).toString());
+	assertEquals("2.0",evaluator.evaluate(sub,env,funcDecList).toString());
+	assertNotEquals("6.0",evaluator.evaluate(sub,env,funcDecList).toString());
 	
-	assertEquals("2.0",div.eval(env).toString());
-	assertNotEquals("6.0",div.eval(env).toString());
+	assertEquals("2.0",evaluator.evaluate(div,env,funcDecList).toString());
+	assertNotEquals("6.0",evaluator.evaluate(div,env,funcDecList).toString());
 	
-	assertEquals("8.0",mult.eval(env).toString());
-	assertNotEquals("6.0",mult.eval(env).toString());
+	assertEquals("8.0",evaluator.evaluate(mult,env,funcDecList).toString());
+	assertNotEquals("6.0",evaluator.evaluate(mult,env,funcDecList).toString());
 	
-	assertEquals("4.0",ass1.eval(env).toString());
-	assertNotEquals("6.0",ass1.eval(env).toString());
+	assertEquals("4.0",evaluator.evaluate(ass1,env,funcDecList).toString());
+	assertNotEquals("6.0",evaluator.evaluate(ass1,env,funcDecList).toString());
     }
 
     @Test
@@ -669,16 +674,18 @@ public class TestAST extends TestCase {
 	Sin sin = new Sin(c1);
 	Negation neg = new Negation(c1);
 	Environment env = new Environment();
-	assertEquals("0.5403023058681398", cos.eval(env).toString());
-	assertNotEquals("-1.0", cos.eval(env).toString());
-	assertEquals("2.718281828459045", exp.eval(env).toString());
-	assertNotEquals("0.5403023058681398", exp.eval(env).toString());
-	assertEquals("0.0", log.eval(env).toString());
-	assertNotEquals("0.5403023058681398", log.eval(env).toString());
-	assertEquals("0.8414709848078965", sin.eval(env).toString());
-	assertNotEquals("0.5403023058681398", sin.eval(env).toString());
-	assertEquals("-1.0", neg.eval(env).toString());
-	assertNotEquals("0.5403023058681398", neg.eval(env).toString());
+        final EvaluationVisitor evaluator = new EvaluationVisitor();
+	HashMap<String, FunctionDeclaration> funcDecList = new HashMap<>();
+	assertEquals("0.5403023058681398",evaluator.evaluate(cos,env,funcDecList).toString());
+	assertNotEquals("-1.0", evaluator.evaluate(cos,env,funcDecList).toString());
+	assertEquals("2.718281828459045", evaluator.evaluate(exp,env,funcDecList).toString());
+	assertNotEquals("0.5403023058681398", evaluator.evaluate(exp,env,funcDecList).toString());
+	assertEquals("0.0", evaluator.evaluate(log,env,funcDecList).toString());
+	assertNotEquals("0.5403023058681398", evaluator.evaluate(log,env,funcDecList).toString());
+	assertEquals("0.8414709848078965", evaluator.evaluate(sin,env,funcDecList).toString());
+	assertNotEquals("0.5403023058681398", evaluator.evaluate(sin,env,funcDecList).toString());
+	assertEquals("-1.0", evaluator.evaluate(neg,env,funcDecList).toString());
+	assertNotEquals("0.5403023058681398",evaluator.evaluate(neg,env,funcDecList).toString());
     }
 
 }

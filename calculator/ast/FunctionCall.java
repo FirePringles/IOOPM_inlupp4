@@ -34,6 +34,18 @@ public class FunctionCall extends SymbolicExpression{
         return this.arguments.size();
     }
 
+    public boolean equals(FunctionCall other) {
+        return this.getFunctionName().equals(other.getFunctionName()) && this.getFunctionArgs().equals(other.getFunctionArgs());
+    }
+    
+    @Override
+    public boolean equals(Object other) {
+        if(!(other instanceof FunctionCall)) {
+            return false;
+        } else {
+            return this.equals((FunctionCall) other);
+        }
+    }
 
     @Override
     public int getArgLen(){

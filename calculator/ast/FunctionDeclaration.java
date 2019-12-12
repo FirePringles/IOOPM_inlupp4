@@ -47,5 +47,18 @@ public class FunctionDeclaration extends SymbolicExpression{
         return this.functionParameters.size();
     }
 
+    public boolean equals(FunctionDeclaration other) {
+        return this.getFunctionName().equals(other.getFunctionName()) && this.getFunctionPara().equals(other.getFunctionPara()) && this.getFunctionBody().equals(other.getFunctionBody());
+    }
+    
+    @Override
+    public boolean equals(Object other) {
+        if(!(other instanceof FunctionDeclaration)) {
+            return false;
+        } else {
+            return this.equals((FunctionDeclaration) other);
+        }
+    }
+
 
 }

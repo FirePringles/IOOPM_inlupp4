@@ -1,8 +1,26 @@
 package org.ioopm.calculator.ast;
 
+/**
+
+  @author Jonathan Gustafsson, Joachim Forsberg
+
+*/
+
+
 public class NamedConstantChecker implements Visitor{
 
   private Environment env;
+
+  /**
+    The topLevel method that will start a chain of call to the visit method.
+
+    @param topLevel the top level SymbolicExpression to be evaluated
+    @param env the environment containing all variables
+
+    @return an evaluated SymbolicExpression
+
+  */
+
 
   public boolean checkNamedConstant(SymbolicExpression topLevel, Environment env){
     this.env = env;
@@ -21,6 +39,13 @@ public class NamedConstantChecker implements Visitor{
       return a;
   }
 
+
+  /**
+
+    @param a assignment to be checked
+    @return SymbolicExpression that is checked
+
+  */
 
   // Need better printing (if we are to follow the example on the website)
   public SymbolicExpression visit(Assignment a){

@@ -1,8 +1,67 @@
-function fa(n) + "\n"
-n-1=m + "\n"
-if n > 1 {fa(m) * n} else {1} + "\n"
-end + "\n"
-
-fa(4)
-
+sin(0)
+cos(0)
+1*2
+6/2
+1+3
+6-1
+3+6-3
+7/1*2/2
+4*(1+1)
+(1+2)*3
+(2+6/2)*2+(3*3/9-1)
+log(59874.2)
+exp(2.48491)
+19+-6
+12*-1+24*(2-1)+-2+4
+15 = x
+16 = y
+x+2
+x+y-13
+Answer-24+1
+(((((20)))))
+(((((20)+1))))
+(((20+1)+1))
+5----18
+vars
+clear
+x + 3
+hej - det = c
+c
+5 = hej
+6 = det
+c
+hej - det = c
+c
+sin(8) = xer
+xer + f
+vars
+4*5/2+(4*3-sin(88-1))*log(2)=w=r=q
+w
+r
+q
+hej ehje ehje
+9++-+***/4
+4+*+?(HDCBP)0å3N>#c'034mf903
+c⁾J=#̈́3c0+3̈́+fjm*MN903W*#År
+w3r+j03wqf<'wå30f,3+w'rF
+5+++++5
+5*****5
+5/////5
+/
+*
++
+-
+(
+)
+quit()
+vars+
+()vars
+/clear
+sin(clear)
+cos(8
+log(
+sin(33+quit)
+exp(32+7)//
+7/0
+0/0
 quit

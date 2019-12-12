@@ -1,7 +1,13 @@
 package org.ioopm.calculator.ast;
 
-/** Represents a mulitplication.
+/**
+
+  Represents a mulitplication.
+  @author Jonathan Gustafsson, Joachim Forsberg
+
 */
+
+
 public class Multiplication extends Binary implements Visitable{
 
     /**

@@ -4,7 +4,6 @@ run: all
 run_file: all
 	java -cp bin/ org.ioopm.calculator.Calculator < test.txt
 
-
 all: ast parser calculator
 
 test: ast
@@ -41,6 +40,11 @@ ast_test_clean:
 ast_test: junit_ast_compile junit_ast_test
 
 parser_test: junit_parser_compile junit_parser_test
+
+doc: calculator/parser/* calculator/ast/*
+	rm -rf doc
+	mkdir doc
+	javadoc -d doc calculator/parser/* calculator/ast/* calculator/Calculator.java
 
 clean:
 	rm -rf bin/

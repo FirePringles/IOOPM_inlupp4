@@ -1,5 +1,12 @@
 package org.ioopm.calculator.ast;
 
+/**
+  The class that will evaluate all the nodes in the Abstract syntax tree (AST)
+  Except for the evaluate method the only method existing is the visit method.
+  All nodes in the AST has its own visit method.
+
+
+*/
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -9,7 +16,16 @@ public class EvaluationVisitor implements Visitor {
     private ArrayList<Environment> stack;
     private HashMap<String, FunctionDeclaration> funcDecList;
 
+    /**
+      The topLevel method that will start a chain of call to the visit method.
 
+      @param topLevel the top level SymbolicExpression to be evaluated
+      @param env the environment containing all variables
+      @param funcDecList the list containing all known functions
+
+      @return an evaluated SymbolicExpression
+
+    */
 
     public SymbolicExpression evaluate(SymbolicExpression topLevel, Environment env, HashMap<String, FunctionDeclaration> funcDecList) {
         this.env = env;
@@ -19,21 +35,11 @@ public class EvaluationVisitor implements Visitor {
         return topLevel.accept(this);
     }
 
-    // This method gets called from Addition.accept(Visitor v) -- you should
-    // be able to see from the eval() methods how these should behave (i.e.,
-    // compare this method with your Addition::eval() and Symbolic.addition)
     public SymbolicExpression visit(Addition n) {
-        // Visit the left hand side and right hand side subexpressions
+
         SymbolicExpression left = n.getLHS().accept(this);
         SymbolicExpression right = n.getRHS().accept(this);
-        // When we come back here, the visitor has visited all subexpressions,
-        // meaning left and right point to newly created trees reduced to
-        // the extent possible (best case -- both are constants)
 
-        // If subexpressions are fully evaluated, replace them in
-        // the tree with a constant whose value is the sub of the
-        // subexpressions, if not, simply construct a new addition
-        // node from the new subexpressions
         if (left.isConstant() && right.isConstant()) {
             return new Constant(left.getValue() + right.getValue());
         } else {
@@ -166,7 +172,11 @@ public class EvaluationVisitor implements Visitor {
         throw new RuntimeException("Can't evaluate vars");
     }
 
-    // This is also another beauty!
+    /**
+      
+
+
+    */
 
     public SymbolicExpression visit(Conditional n){
 
@@ -215,7 +225,7 @@ public class EvaluationVisitor implements Visitor {
 
     public SymbolicExpression visit(FunctionDeclaration n){
         ArrayList<Variable> vars = n.getFunctionPara();
-	
+
         for(int i = 0; i < vars.size(); i++){
 	    this.stack.get(0).put(vars.get(i), this.funcConstants.get(i).accept(this));
         }

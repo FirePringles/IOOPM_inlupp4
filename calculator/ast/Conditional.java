@@ -64,8 +64,29 @@ public class Conditional extends SymbolicExpression{
     return this.operation;
   }
 
-  @Override
-  public SymbolicExpression accept(Visitor v){
-    return v.visit(this);
-  }
+    @Override
+    public String toString(){
+	String expr = "";
+	expr = "if " + this.getLHS() + " " + this.getOperation() + " " + this.getRHS() + " {" + this.getS1() + "} else {" + this.getS2() + "}"; 
+	return expr;
+    }
+    
+    public boolean equals(Conditional other) {
+        return this.getLHS().equals(other.getLHS()) && this.getRHS().equals(other.getRHS()) && this.getS1().equals(other.getS1()) && this.getS2().equals(other.getS2()) && this.getOperation().equals(other.getOperation());
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if(!(other instanceof Conditional)) {
+            return false;
+        } else {
+            return this.equals((Conditional) other);
+        }
+    }
+    
+    @Override
+    public SymbolicExpression accept(Visitor v){
+	return v.visit(this);
+    }
+    
 }

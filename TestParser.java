@@ -143,21 +143,7 @@ public class TestParser extends TestCase {
     assertEquals(vars, varsParsed);
 
   }
-  @Test
-  public void testNamedConstants() throws IOException{
-    CalculatorParser parser = new CalculatorParser();
 
-    SymbolicExpression pi = new Constant(Math.PI);
-    SymbolicExpression piParsed = parser.parse("pi\n");
-
-    SymbolicExpression e = new Constant(Math.E);
-    SymbolicExpression eParsed = parser.parse("e\n");
-
-
-     assertTrue(pi.equals(piParsed));
-     assertTrue(e.equals(eParsed));
-
-  }
   @Test
   public void testFunctionDec() throws IOException{
       CalculatorParser parser = new CalculatorParser();
@@ -169,10 +155,9 @@ public class TestParser extends TestCase {
       SymbolicExpression func = new FunctionDeclaration("x",para,seq);
       SymbolicExpression funcParsed = parser.parse("function x()\n");
 
-      //Måste fixa equals
-      assertTrue(func.equals(funcParsed));
-	  
+      assertTrue(func.equals(funcParsed));	  
   }
+
   @Test
   public void testFunctionCall() throws IOException{
       CalculatorParser parser = new CalculatorParser();
@@ -184,6 +169,7 @@ public class TestParser extends TestCase {
       assertTrue(funcCall.equals(funcCallParsed));
 	  
   }
+
   @Test
   public void testConditional() throws IOException{
       CalculatorParser parser = new CalculatorParser();
@@ -200,5 +186,4 @@ public class TestParser extends TestCase {
       assertTrue(cond.equals(condParsed));
 	  
   }
-
 }

@@ -54,4 +54,17 @@ public class Sequence extends SymbolicExpression{
     public SymbolicExpression accept(Visitor v){
 	return v.visit(this);
     }
+
+    public boolean equals(Sequence other) {
+        return this.getBody().equals(other.getBody());
+    }
+    
+    @Override
+    public boolean equals(Object other) {
+        if(!(other instanceof Sequence)) {
+            return false;
+        } else {
+            return this.equals((Sequence) other);
+        }
+    }
 }

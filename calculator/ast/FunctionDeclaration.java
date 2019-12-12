@@ -25,7 +25,7 @@ public class FunctionDeclaration extends SymbolicExpression{
     /** All the statements withing the function */
     private Sequence functionBody;
 
-    public FunctionDeclaration(String name,ArrayList<Variable> params, Sequence body){
+    public FunctionDeclaration(String name, ArrayList<Variable> params, Sequence body){
         this.functionName = name;
         this.functionParameters = params;
         this.functionBody = body;
@@ -41,7 +41,7 @@ public class FunctionDeclaration extends SymbolicExpression{
     public boolean isFuncDec(){
         return true;
     }
-    
+
     @Override
     public String getFunctionName(){
         return this.functionName;
@@ -92,7 +92,7 @@ public class FunctionDeclaration extends SymbolicExpression{
     public boolean equals(FunctionDeclaration other) {
         return this.getFunctionName().equals(other.getFunctionName()) && this.getFunctionPara().equals(other.getFunctionPara()) && this.getFunctionBody().equals(other.getFunctionBody());
     }
-    
+
     @Override
     public boolean equals(Object other) {
         if(!(other instanceof FunctionDeclaration)) {

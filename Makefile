@@ -20,6 +20,7 @@ parser: ast
 
 clean:
 	rm -rf bin/
+	rm -rf doc/
 
 junit_ast_compile: ast
 	javac -cp JUNIT/junit-4.13-rc-1.jar:bin/ -d bin/ TestAST.java

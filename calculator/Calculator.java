@@ -9,12 +9,49 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 
+/**
+  * The main program. A symbolic calculator with its own parser. Will get input
+  * from the terminal and parser them and create an Abstract Syntax Tree (AST)
+  * that will be evaluated.
+  * <p>
+  * Curren operations supported are Addition, Subtraction, Multiplication, Division
+  * Sin, Cos, Log, Exp, Negation.
+  * </p>
+  * <p>
+  * You can also assign values to variables during runtime which you can use.
+  * There are some predefined variables (named constants) that you can use right away.
+  * These are pi, e, Answer and L
+  * </p>
+  * <p>
+  * The calculator also support conditional calculations.
+  * </p>
+  * <p>
+  * You can also create functions that you can later on can use. There are some predefined
+  * functions you can use right away, like max and min.
+  * </p>
+  * @author Jonathan Gustafsson, Joachim Forsberg
+*/
+
+
 public class Calculator {
 
+    //* Environment containing assign variables */
     private static Environment env;
+
+    //* Number of commands */
     private static int commands = 0;
+
+    //* Numner of commands that were successfull */
     private static int successfulCommands = 0;
+
+    //* Number of commands that were fully evaluated */
     private static int fullyEvaluatedCommands = 0;
+
+    //* Instance of the EvaluationVisitor */
+    final static EvaluationVisitor evaluator = new EvaluationVisitor();
+
+    //* Scanner intance */
+    static Scanner sc = new Scanner(System.in);
 
 
     private static void command(Command command) {
@@ -30,11 +67,9 @@ public class Calculator {
         }
     }
 
-    public static FunctionDeclaration functionDec(FunctionDeclaration func, CalculatorParser parser){
-        final EvaluationVisitor evaluator = new EvaluationVisitor();
+    private static FunctionDeclaration functionDec(FunctionDeclaration func, CalculatorParser parser){
 
 	      boolean looper = true;
-	      Scanner sc = new Scanner(System.in);
 	      String new_input;
 
         while(looper == true){
@@ -59,27 +94,43 @@ public class Calculator {
         return func;
     }
 
+    /**
+      Main function
+    */
     public static void main(String[] args) {
+
+        /** Instance of the parser */
         final CalculatorParser parser = new CalculatorParser();
-        env = new Environment();
+
+        /** Instance of variables */
+        Calculator.env = new Environment();
+
+
+        /** A variables that will contain the last expression */
         final Variable ans = new Variable("ans");
-        final EvaluationVisitor evaluator = new EvaluationVisitor();
+
+        /** Instance of NamedConstantChecker */
         final NamedConstantChecker checker = new NamedConstantChecker();
+
+        /** Instance of ReassignmentChecker */
         final ReassignmentChecker reassChecker = new ReassignmentChecker();
-        Scanner sc = new Scanner(System.in);
+
+        /** */
         String input;
+
+        /** */
         SymbolicExpression result;
 
+        /** Will contain declared funtions during runtime */
         HashMap<String, FunctionDeclaration> funcDecList = new HashMap<>();
-        PredefinedFunctions pf = new PredefinedFunctions();
-        ArrayList<FunctionDeclaration> fd = pf.getPredefinedFunctions();
 
+        /** Instance of our predefined functions. Will be loaded into our funcDecList at the start of the program */
+        PredefinedFunctions pf = new PredefinedFunctions();
+
+        ArrayList<FunctionDeclaration> fd = pf.getPredefinedFunctions();
         for(FunctionDeclaration f : fd){
           funcDecList.put(f.getFunctionName(), f);
         }
-
-
-        Calculator.env = new Environment();
 
         while(true) {
             System.out.print("Please enter an expression: ");

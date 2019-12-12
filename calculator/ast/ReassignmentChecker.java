@@ -2,12 +2,33 @@ package org.ioopm.calculator.ast;
 
 import java.util.ArrayList;
 
+/**
+  Will make sure that an expression will not assign to same variable twice
+  in the same expression
+
+  @author Jonathan Gustafsson, Joachim Forsberg
+
+*/
+
+
 public class ReassignmentChecker implements Visitor{
   private Environment env;
 
   // Think it is working, feel like we could do a better solution however, idk
   private ArrayList<SymbolicExpression> checkList = new ArrayList<SymbolicExpression>();
   private ArrayList<ArrayList<SymbolicExpression>> stack = new ArrayList<ArrayList<SymbolicExpression>>();
+
+
+  /**
+    The topLevel method that will start a chain of call to the visit method.
+
+    @param topLevel the top level SymbolicExpression to be evaluated
+    @param env the environment containing all variables
+
+    @return an evaluated SymbolicExpression
+
+  */
+
 
   public boolean reassignedCheck(SymbolicExpression topLevel, Environment env){
     this.env = env;
@@ -30,6 +51,13 @@ public class ReassignmentChecker implements Visitor{
       return a;
   }
 
+
+  /**
+
+    @param a assignment to be checked
+    @return SymbolicExpression that is checked
+
+  */
 
     // Need better printing (if we are to follow the example on the website)
   public SymbolicExpression visit(Assignment a){

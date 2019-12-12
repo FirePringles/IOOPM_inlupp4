@@ -3,20 +3,23 @@ package org.ioopm.calculator.ast;
 import java.util.ArrayList;
 
 /**
-  * Will be used when a function types in a function. For this to be able to work
-  * the function typed need to be previously declared. There will be some PredefinedFunctions.
-  *
-  * @see FunctionDeclaration
-  * @see PredefinedFunctions
-  *
-  * @author Jonathan Gustafsson, Joachim Forsberg
+ * Will be used when a function types in a function. For this to be able to work
+ * the function typed need to be previously declared. There will be some PredefinedFunctions.
+ *
+ * @see FunctionDeclaration
+ * @see PredefinedFunctions
+ *
+ * @author Jonathan Gustafsson, Joachim Forsberg
 
-*/
+ */
 
 
 public class FunctionCall extends SymbolicExpression{
 
+    //* Name of the function call */
     private String name;
+
+    //* Arguments of the function call */
     private ArrayList<Atom> arguments;
 
     public FunctionCall(String name, ArrayList<Atom> arguments){
@@ -41,21 +44,21 @@ public class FunctionCall extends SymbolicExpression{
 
     @Override
     public String toString(){
-	String expr = "";
-	ArrayList<Atom> para = this.getFunctionArgs();
-	expr = expr + this.getFunctionName() + "(";
+        String expr = "";
+        ArrayList<Atom> para = this.getFunctionArgs();
+        expr = expr + this.getFunctionName() + "(";
 
-	for(int i = 0; i<para.size(); i++){
-	    if(i+1 == para.size()){
-		expr = expr + para.get(i).toString();
-		break;
-	    }
-	    expr = expr + para.get(i).toString() + ",";
-	}
+        for(int i = 0; i<para.size(); i++){
+            if(i+1 == para.size()){
+                expr = expr + para.get(i).toString();
+                break;
+            }
+            expr = expr + para.get(i).toString() + ",";
+        }
 
-	expr = expr + ")";
-	
-	return expr;
+        expr = expr + ")";
+
+        return expr;
     }
 
     public ArrayList<Atom> getFunctionArgs(){
@@ -69,7 +72,7 @@ public class FunctionCall extends SymbolicExpression{
     public boolean equals(FunctionCall other) {
         return this.getFunctionName().equals(other.getFunctionName()) && this.getFunctionArgs().equals(other.getFunctionArgs());
     }
-    
+
     @Override
     public boolean equals(Object other) {
         if(!(other instanceof FunctionCall)) {
@@ -81,7 +84,7 @@ public class FunctionCall extends SymbolicExpression{
 
     @Override
     public int getArgLen(){
-      return this.arguments.size();
+        return this.arguments.size();
     }
 
     @Override

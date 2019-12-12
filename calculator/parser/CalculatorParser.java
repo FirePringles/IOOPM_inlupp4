@@ -8,39 +8,8 @@ import java.util.ArrayList;
 
 public class CalculatorParser {
 
+    /** Instance of StreamTokenizer */
     private StreamTokenizer st;
-
-    public CalculatorParser() {
-
-    }
-        /**
-     * Help function for commad to see what command the input string matches.
-     *
-     * @return Boolean. If string is command then return true, else false
-     */
-    private boolean isCommand(String word) {
-        switch(word) {
-        case "quit": return true;
-        case "vars": return true;
-        case "clear": return true;
-        default: return false;
-        }
-    }
-
-        /**
-     * Help function for unary to see if string is a valid unary expression
-     *
-     * @return Boolean. If word is a valid unary command then return true, else false.
-     */
-    private boolean isUnary(String word) {
-        switch(word) {
-        case "exp": return true;
-        case "log": return true;
-        case "sin": return true;
-        case "cos": return true;
-        default: return false;
-        }
-    }
 
     /**
      * Creates StreamTokenizer of a input string and then send that to the rest of the parser
@@ -57,7 +26,6 @@ public class CalculatorParser {
         return top_level();
     }
 
-
     /**
      * Check if current object is either a command or a expression.
      *
@@ -65,6 +33,7 @@ public class CalculatorParser {
      * @throws SyntaxErrorException if unexpected tokens were parsed
      * @throws IOException if an I/O error occurs.
      */
+
     private SymbolicExpression top_level() throws IOException {
         SymbolicExpression result = null;
         if(this.st.nextToken() == this.st.TT_WORD && (isCommand(this.st.sval) || this.st.sval.equals("if") || this.st.sval.equals("function"))){
@@ -90,60 +59,6 @@ public class CalculatorParser {
     }
 
     /**
-     * Method for creating a FunctionDeclaration object from string input.
-     *
-     * @return SymbolicExpression. The FunctionDeclaration in form of the superclass SymbolicExpression
-     * @throws IOException if an I/O error occurs.
-     */
-    public SymbolicExpression functionDec() throws IOException{
-        String funcName;
-        ArrayList<Variable> parameters = new ArrayList<>();
-        if (this.st.nextToken() == st.TT_WORD){
-            funcName = this.st.sval;
-        } else {
-            throw new SyntaxErrorException("Expected function name");
-        }
-        if (this.st.nextToken() == '(') {
-            boolean paraLoop = true;
-            while(paraLoop == true){
-              if(this.st.nextToken() == ')'){
-                paraLoop = false;
-              } else if(this.st.ttype == ',') {
-	      } else if(this.st.ttype == this.st.TT_WORD){
-                  parameters.add(new Variable(this.st.sval));
-              } else {
-		  throw new SyntaxErrorException("Something is wrong here");
-	      }
-            }
-        } else {
-            throw new SyntaxErrorException("Expected parameters");
-        }
-        Sequence seq = new Sequence(new ArrayList<SymbolicExpression>());
-        return new FunctionDeclaration(funcName,parameters,seq);
-    }
-
-    /**
-     * Check if object after current object is a '=' and if it is then create new Assignment
-     *
-     * @return SymbolicExpression the result which can be new Assignment
-     * @throws IOException if an I/O error occurs.
-     */
-    public SymbolicExpression assignment() throws IOException {
-        SymbolicExpression lhs = expression();
-        SymbolicExpression rhs = null;
-
-        while(this.st.nextToken() == '=') {
-            rhs = identifier();
-	    if(rhs.isFunctionCall()){
-		throw new SyntaxErrorException("Can't assign functions.");
-	    }
-            lhs = new Assignment(lhs, rhs);
-        }
-        this.st.pushBack();
-        return lhs;
-    }
-
-    /**
      * Check if current object is a command. If it is then perform approriate method for that command
      * else throw IOException
      *
@@ -151,7 +66,7 @@ public class CalculatorParser {
      * @throws IOException if an I/O error occurs.
      */
 
-    public Command command() throws IOException {
+    private Command command() throws IOException {
         if(this.st.nextToken() == this.st.TT_WORD) {
             String r = this.st.sval;
 
@@ -166,142 +81,104 @@ public class CalculatorParser {
         throw new SyntaxErrorException("Expected command");
     }
 
-    /**
-     * Check if a string is a valid identifer from a list of names that is not valid.
-     *
-     * @param s the string to check
-     * @return boolean true if string is valid, else false
-     */
-    private boolean isValidIdentifier(String s) {
-        if(isCommand(s) || isUnary(s)) {
-            return false;
-        }
-        return true;
-    }
-
-
-
-    /**
-     * Goes throuh the input string and creates a conditional object from that.
-     *
-     * @return SymbolicExpression. The condidtional in form of a SymbolicExpression
-     * @throws IOException if an I/O error occurs.
-     */
-
-    private SymbolicExpression conditional() throws IOException{
-
-	SymbolicExpression res1 = null;
-	SymbolicExpression res2 = null;
-	SymbolicExpression exp1 = expression();
-	this.st.nextToken();
-	String op = isOperation();
-	SymbolicExpression exp2 = expression();
-	this.st.nextToken();
-        if(this.st.ttype == '{'){
-	    res1 = assignment();
-	    if(this.st.nextToken() != '}'){
-		throw new SyntaxErrorException("expected '}' for res1");
-	    }
-	}
-	if(!(this.st.nextToken() == this.st.TT_WORD && this.st.sval.equals("else"))){
-	    throw new SyntaxErrorException("Expected else");
-	}
-	this.st.nextToken();
-	if(this.st.ttype == '{'){
-	    if(this.st.nextToken() == this.st.TT_WORD && this.st.sval.equals("if")){
-	       res2 = conditional();
-		} else {
-		this.st.pushBack();
-		    res2 = assignment();
-		}
-	    if(this.st.nextToken() != '}'){
-		throw new SyntaxErrorException("expected 2 '}' for res2");
-	    }
-	}
-
-	if(res1 == null || res2 == null){
-	    throw new SyntaxErrorException("Expected brackets for results!");
-	}
-
-	return new Conditional(exp1,exp2,res1,res2,op);
-    }
-
         /**
-     * Help function for conditional. Checks if a string is a valid operation to use in if
-     *
-     * @return String. A valid operation in form of a string.
-     * @throws IOException if an I/O error occurs.
-     */
-    private String isOperation() throws IOException{
+         * Goes throuh the input string and creates a conditional object from that.
+         *
+         * @return SymbolicExpression. The condidtional in form of a SymbolicExpression
+         * @throws IOException if an I/O error occurs.
+         */
 
-	if(this.st.ttype == '<'){
-	    this.st.nextToken();
-	    if(this.st.ttype == '='){
-		return "<=";
-		    } else {
-		this.st.pushBack();
-		return "<";
-	    }
-	}
+        private SymbolicExpression conditional() throws IOException{
 
-	if(this.st.ttype == '>'){
-	    this.st.nextToken();
-	    if (this.st.ttype == '='){
-		return ">=";
-		    } else {
-		this.st.pushBack();
-		return ">";
-	    }
-	}
-
-	if(this.st.ttype == '='){
-	    this.st.nextToken();
-	    if(this.st.ttype == '='){
-		return "==";
-	    }
-	} else {
-	    throw new SyntaxErrorException("No Vaild operation for: " + this.st.sval);
-	}
-	return "<";
-    }
-    /**
-     * Check if current object is a word and if it is valid. If it is then check if it is a namedConstant or a new variable
-     *
-     * @return Variable the variable which is either a new variable or a aleady existing namedConstant
-     * @throws IOException if an I/O error occurs.
-     */
-    public SymbolicExpression identifier() throws IOException {
-        if(this.st.nextToken() == this.st.TT_WORD && isValidIdentifier(this.st.sval)) {
-          String name = this.st.sval;
-            if(Constants.isNamedConstant(this.st.sval)) {
-                return new NamedConstant(this.st.sval, Constants.getValue(this.st.sval));
+            SymbolicExpression res1 = null;
+            SymbolicExpression res2 = null;
+            SymbolicExpression exp1 = expression();
+            this.st.nextToken();
+            String op = isOperation();
+            SymbolicExpression exp2 = expression();
+            this.st.nextToken();
+            if(this.st.ttype == '{'){
+                res1 = assignment();
+                if(this.st.nextToken() != '}'){
+                    throw new SyntaxErrorException("expected '}'");
+                }
             }
-            if(this.st.nextToken() == '('){
-              ArrayList<Atom> argList = new ArrayList<Atom>();
-              boolean loop = true;
-              this.st.nextToken();
-              while(loop){
-              if(this.st.ttype == this.st.TT_NUMBER){
-                argList.add(new Constant(this.st.nval));
-                this.st.nextToken();
+            if(!(this.st.nextToken() == this.st.TT_WORD && this.st.sval.equals("else"))){
+                throw new SyntaxErrorException("Expected else");
+            }
+            this.st.nextToken();
+            if(this.st.ttype == '{'){
+                if(this.st.nextToken() == this.st.TT_WORD && this.st.sval.equals("if")){
+                    res2 = conditional();
+                } else {
+                    this.st.pushBack();
+                    res2 = assignment();
+                }
+                if(this.st.nextToken() != '}'){
+                    throw new SyntaxErrorException("expected '}'");
+                }
+            }
 
-              } else if(this.st.ttype == this.st.TT_WORD){
-                argList.add(new Variable(this.st.sval));
-                this.st.nextToken();
-              } else if(this.st.ttype == ','){
-                this.st.nextToken();
-              } else if(this.st.ttype == ')'){
-                loop = false;
-              } else {
-                throw new SyntaxErrorException("Unexpected stuff");
-              }
+            if(res1 == null || res2 == null){
+                throw new SyntaxErrorException("Expected brackets for results!");
             }
-            return new FunctionCall(name, argList);
-            }
-            this.st.pushBack();
-            return new Variable(name);
+
+            return new Conditional(exp1,exp2,res1,res2,op);
         }
-        throw new SyntaxErrorException("Invalid identifier");
+
+
+    /**
+     * Method for creating a FunctionDeclaration object from string input.
+     *
+     * @return SymbolicExpression. The FunctionDeclaration in form of the superclass SymbolicExpression
+     * @throws IOException if an I/O error occurs.
+     */
+    private SymbolicExpression functionDec() throws IOException{
+        String funcName;
+        ArrayList<Variable> parameters = new ArrayList<>();
+        if (this.st.nextToken() == st.TT_WORD){
+            funcName = this.st.sval;
+        } else {
+            throw new SyntaxErrorException("Expected function name");
+        }
+        if (this.st.nextToken() == '(') {
+            boolean paraLoop = true;
+            while(paraLoop == true){
+                if(this.st.nextToken() == ')'){
+                    paraLoop = false;
+                } else if(this.st.ttype == ',') {
+                } else if(this.st.ttype == this.st.TT_WORD){
+                    parameters.add(new Variable(this.st.sval));
+                } else {
+                    throw new SyntaxErrorException("Expected function parameter, ',' or ')'");
+                }
+            }
+        } else {
+            throw new SyntaxErrorException("Expected parameters");
+        }
+        Sequence seq = new Sequence(new ArrayList<SymbolicExpression>());
+        return new FunctionDeclaration(funcName,parameters,seq);
+    }
+
+    /**
+     * Check if object after current object is a '=' and if it is then create new Assignment
+     *
+     * @return SymbolicExpression the result which can be new Assignment
+     * @throws IOException if an I/O error occurs.
+     */
+    private SymbolicExpression assignment() throws IOException {
+        SymbolicExpression lhs = expression();
+        SymbolicExpression rhs = null;
+
+        while(this.st.nextToken() == '=') {
+            rhs = identifier();
+            if(rhs.isFunctionCall()){
+                throw new SyntaxErrorException("Can't assign functions.");
+            }
+            lhs = new Assignment(lhs, rhs);
+        }
+        this.st.pushBack();
+        return lhs;
     }
 
     /**
@@ -311,7 +188,7 @@ public class CalculatorParser {
      * @return SymbolicExpression the result
      * @throws IOException if an I/O error occurs.
      */
-    public SymbolicExpression expression() throws IOException {
+    private SymbolicExpression expression() throws IOException {
         SymbolicExpression result = term();
         while (st.ttype == '+' || st.ttype == '-') {
             int operation = st.ttype;
@@ -326,6 +203,7 @@ public class CalculatorParser {
         st.pushBack();
         return result;
     }
+
 
     /**
      * Sends current object to factor mathod and then checks if the next object is either * or /.
@@ -402,9 +280,9 @@ public class CalculatorParser {
     }
 
     /**
-    *
-    *  @return assignment
-    */
+     *
+     *  @return assignment
+     */
 
     private SymbolicExpression scope() throws IOException{
         return assignment();
@@ -452,4 +330,129 @@ public class CalculatorParser {
             throw new SyntaxErrorException("Expected number");
         }
     }
+
+    /**
+     * Check if current object is a word and if it is valid. If it is then check if it is a namedConstant or a new variable
+     *
+     * @return Variable the variable which is either a new variable or a aleady existing namedConstant
+     * @throws IOException if an I/O error occurs.
+     */
+    private SymbolicExpression identifier() throws IOException {
+        if(this.st.nextToken() == this.st.TT_WORD && isValidIdentifier(this.st.sval)) {
+            String name = this.st.sval;
+            if(Constants.isNamedConstant(this.st.sval)) {
+                return new NamedConstant(this.st.sval, Constants.getValue(this.st.sval));
+            }
+            if(this.st.nextToken() == '('){
+                ArrayList<Atom> argList = new ArrayList<Atom>();
+                boolean loop = true;
+                this.st.nextToken();
+                while(loop){
+                    if(this.st.ttype == this.st.TT_NUMBER){
+                        argList.add(new Constant(this.st.nval));
+                        this.st.nextToken();
+
+                    } else if(this.st.ttype == this.st.TT_WORD){
+                        argList.add(new Variable(this.st.sval));
+                        this.st.nextToken();
+                    } else if(this.st.ttype == ','){
+                        this.st.nextToken();
+                    } else if(this.st.ttype == ')'){
+                        loop = false;
+                    } else {
+                        throw new SyntaxErrorException("Expected Atom, ',' or ')'");
+                    }
+                }
+                return new FunctionCall(name, argList);
+            }
+            this.st.pushBack();
+            return new Variable(name);
+        }
+        throw new SyntaxErrorException("Invalid identifier");
+    }
+
+
+    // ------------------ Help functions ------------------
+    /**
+     * Help function for commad to see what command the input string matches.
+     *
+     * @return Boolean. If string is command then return true, else false
+     */
+    private boolean isCommand(String word) {
+        switch(word) {
+        case "quit": return true;
+        case "vars": return true;
+        case "clear": return true;
+        default: return false;
+        }
+    }
+
+    /**
+     * Check if a string is a valid identifer from a list of names that is not valid.
+     *
+     * @param s the string to check
+     * @return boolean true if string is valid, else false
+     */
+    private boolean isValidIdentifier(String s) {
+        if(isCommand(s) || isUnary(s)) {
+            return false;
+        }
+        return true;
+    }
+
+
+    /**
+     * Help function for unary to see if string is a valid unary expression
+     *
+     * @return Boolean. If word is a valid unary command then return true, else false.
+     */
+    private boolean isUnary(String word) {
+        switch(word) {
+        case "exp": return true;
+        case "log": return true;
+        case "sin": return true;
+        case "cos": return true;
+        default: return false;
+        }
+    }
+
+    /**
+     * Help function for conditional. Checks if a string is a valid operation to use in if
+     *
+     * @return String. A valid operation in form of a string.
+     * @throws IOException if an I/O error occurs.
+     */
+    private String isOperation() throws IOException{
+
+        if(this.st.ttype == '<'){
+            this.st.nextToken();
+            if(this.st.ttype == '='){
+                return "<=";
+            } else {
+                this.st.pushBack();
+                return "<";
+            }
+        }
+
+        if(this.st.ttype == '>'){
+            this.st.nextToken();
+            if (this.st.ttype == '='){
+                return ">=";
+            } else {
+                this.st.pushBack();
+                return ">";
+            }
+        }
+
+        if(this.st.ttype == '='){
+            this.st.nextToken();
+            if(this.st.ttype == '='){
+                return "==";
+            }
+        } else {
+            throw new SyntaxErrorException("No Vaild operation for: " + this.st.sval);
+        }
+        return "<";
+    }
+
 }

@@ -20,7 +20,7 @@ public class PredefinedFunctions{
     this.function = new ArrayList<FunctionDeclaration>();
     this.function.add(max());
     this.function.add(min());
-
+    // this.function.add(fact());
   }
 
   private FunctionDeclaration max(){
@@ -59,6 +59,28 @@ public class PredefinedFunctions{
     Sequence s = new Sequence(seq);
     return new FunctionDeclaration("min", par, s);
 
+  }
+
+  // Not working
+  private FunctionDeclaration fact(){
+    ArrayList<Variable> par = new ArrayList<Variable>();
+    ArrayList<Atom> args = new ArrayList<Atom>();
+    ArrayList<SymbolicExpression> seq = new ArrayList<SymbolicExpression>();
+
+    Variable n = new Variable("n");
+    String name = "factorial";
+    par.add(n);
+
+    Variable m = new Variable("m");
+    SymbolicExpression mm = new Assignment(m, new Subtraction(n, new Constant(1)));
+    seq.add(mm);
+    args.add(m);
+    Conditional cond = new Conditional(n, new Constant(1), new Multiplication(new FunctionCall(name, args), n), new Constant(1), ">");
+    seq.add(cond);
+    seq.add(new Variable("end"));
+
+    Sequence s = new Sequence(seq);
+    return new FunctionDeclaration(name, par, s);
   }
 
   /**

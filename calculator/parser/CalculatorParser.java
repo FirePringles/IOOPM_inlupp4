@@ -129,9 +129,9 @@ public class CalculatorParser {
 
         while(this.st.nextToken() == '=') {
             rhs = identifier();
-            if(rhs.isFunctionCall()){
-              throw new SyntaxErrorException("Cannot assign to function.");
-            }
+	    if(rhs.isFunctionCall()){
+		throw new SyntaxErrorException("Can't assign functions.");
+	    }
             lhs = new Assignment(lhs, rhs);
         }
         this.st.pushBack();

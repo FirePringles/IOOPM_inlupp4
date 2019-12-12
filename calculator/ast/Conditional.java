@@ -51,6 +51,13 @@ public class Conditional extends SymbolicExpression{
         }
     }
 
+    @Override
+    public String toString(){
+	String expr = "";
+	expr = "if " + this.getLHS() + " " + this.getOperation() + " " + this.getRHS() + " {" + this.getS1() + "} else {" + this.getS2() + "}"; 
+	return expr;
+    }
+
   @Override
   public SymbolicExpression accept(Visitor v){
     return v.visit(this);

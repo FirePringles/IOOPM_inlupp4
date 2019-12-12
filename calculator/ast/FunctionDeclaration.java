@@ -24,6 +24,7 @@ public class FunctionDeclaration extends SymbolicExpression{
     public boolean isFuncDec(){
         return true;
     }
+    
     @Override
     public String getFunctionName(){
         return this.functionName;
@@ -35,6 +36,30 @@ public class FunctionDeclaration extends SymbolicExpression{
 
     public Sequence getFunctionBody(){
         return this.functionBody;
+    }
+
+    @Override
+    public String toString(){
+	ArrayList<Variable> args = this.getFunctionPara();
+	Sequence seq = this.getFunctionBody();
+	String expr = "";
+	ArrayList<SymbolicExpression> body = seq.getBody();
+        expr = expr + this.getFunctionName() + "(";
+
+	for(int i = 0; i<args.size(); i++){
+	    if(i+1 == args.size()){
+		expr = expr + args.get(i).toString();
+		break;
+	    }
+	    expr = expr + args.get(i).toString() + ",";
+	}
+
+	expr = expr + ")\n";
+
+	for(int i = 0; i<seq.getBodySize(); i++){
+	    expr = expr + body.get(i).toString() + "\n";
+	}
+	return expr;
     }
 
     @Override

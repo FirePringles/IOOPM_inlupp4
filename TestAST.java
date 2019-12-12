@@ -558,6 +558,43 @@ public class TestAST extends TestCase {
 	assertEquals("-(1.0)", neg.toString());
 	assertEquals("sin(1.0)", sin.toString());
     }
+    @Test
+    public void testToStringFuncDec() {
+	Variable v1 = new Variable("x");
+	Variable v2 = new Variable("y");
+	Constant c1 = new Constant(1);
+	Constant c2 = new Constant(2);
+	ArrayList<Variable> args = new ArrayList<Variable>();
+	args.add(v1);
+	args.add(v2);
+	
+	ArrayList<SymbolicExpression> body = new ArrayList<SymbolicExpression>();
+	Addition add = new Addition(c1,c2);
+	body.add(add);
+	Sequence seq = new Sequence(body);
+
+	FunctionDeclaration func = new FunctionDeclaration("max",args,seq);
+
+	assertEquals("max(x,y)\n" + "1.0 + 2.0\n", func.toString());
+	
+    }
+    @Test
+    public void testToStringFuncCall(){
+	Variable v1 = new Variable("x");
+	Constant c1 = new Constant(2);
+	ArrayList<Atom> para = new ArrayList<Atom>();
+	para.add(v1);
+	para.add(c1);
+	FunctionCall func = new FunctionCall("max",para);
+	assertEquals("max(x,2.0)",func.toString());
+    }
+    @Test
+    public void testToStringConditional(){
+	Constant c1 = new Constant(1);
+	Constant c2 = new Constant(2);
+	Conditional cond = new Conditional(c2,c1,c2,c1,">");
+	assertEquals("if 2.0 > 1.0 {2.0} else {1.0}",cond.toString());
+    }
 
          //equals
     @Test
@@ -686,6 +723,50 @@ public class TestAST extends TestCase {
 	assertNotEquals("0.5403023058681398", evaluator.evaluate(sin,env,funcDecList).toString());
 	assertEquals("-1.0", evaluator.evaluate(neg,env,funcDecList).toString());
 	assertNotEquals("0.5403023058681398",evaluator.evaluate(neg,env,funcDecList).toString());
+    }
+
+    @Test
+    public void testEvalFuncCall(){
+	final EvaluationVisitor evaluator = new EvaluationVisitor();
+	HashMap<String, FunctionDeclaration> funcDecList = new HashMap<>();
+	Environment env = new Environment();
+	
+	ArrayList<Variable>para = new ArrayList<Variable>();
+	Variable n = new Variable("n");
+	para.add(n);
+
+	ArrayList<SymbolicExpression>body = new ArrayList<SymbolicExpression>();
+	Subtraction sub = new Subtraction(n,new Constant(1));
+	Assignment ass1 = new Assignment(sub,new Variable("m"));
+	Variable end = new Variable("end");
+	body.add(ass1);
+	body.add(end);
+	Sequence seq = new Sequence(body);
+	
+	FunctionDeclaration dec = new FunctionDeclaration("factorial",para,seq);
+	funcDecList.put("factorial",dec);
+
+	Constant c1 = new Constant(4);
+	ArrayList<Atom> args = new ArrayList<Atom>();
+	args.add(c1);
+	FunctionCall func = new FunctionCall("factorial",args);
+	
+	assertEquals("3.0",evaluator.evaluate(func,env,funcDecList).toString());	
+    }
+
+    @Test
+    public void testEvalCond(){
+	final EvaluationVisitor evaluator = new EvaluationVisitor();
+	HashMap<String, FunctionDeclaration> funcDecList = new HashMap<>();
+	Environment env = new Environment();
+
+	Constant c1 = new Constant(1);
+	Constant c2 = new Constant(2);
+
+	Conditional cond = new Conditional(c2,c1,c2,c1,">");
+	Conditional cond1 = new Conditional(c2,c1,c2,c1,"a");
+
+	assertEquals("2.0",evaluator.evaluate(cond,env,funcDecList).toString());
     }
 
 }

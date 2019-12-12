@@ -69,7 +69,15 @@ public class Calculator {
         Scanner sc = new Scanner(System.in);
         String input;
         SymbolicExpression result;
+
         HashMap<String, FunctionDeclaration> funcDecList = new HashMap<>();
+        PredefinedFunctions pf = new PredefinedFunctions();
+        ArrayList<FunctionDeclaration> fd = pf.getPredefinedFunctions();
+
+        for(FunctionDeclaration f : fd){
+          funcDecList.put(f.getFunctionName(), f);
+        }
+
 
         Calculator.env = new Environment();
 

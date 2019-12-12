@@ -20,15 +20,13 @@ public class ReassignmentChecker implements Visitor{
 
 
   /**
-    The topLevel method that will start a chain of call to the visit method.
-
-    @param topLevel the top level SymbolicExpression to be evaluated
-    @param env the environment containing all variables
-
-    @return an evaluated SymbolicExpression
-
+    *The topLevel method that will start a chain of call to the visit method.
+    *
+    * @param topLevel the top level SymbolicExpression to be evaluated
+    * @param env the environment containing all variables
+    *
+    * @return an evaluated SymbolicExpression
   */
-
 
   public boolean reassignedCheck(SymbolicExpression topLevel, Environment env){
     this.env = env;
@@ -45,6 +43,13 @@ public class ReassignmentChecker implements Visitor{
 
   }
 
+  /**
+    * This method will just return the same instance of a it recieved
+    *
+    * @param a to be visited
+    * @return SymbolicExpression
+  */
+
   public SymbolicExpression visit(Addition a) {
       a.getLHS().accept(this);
       a.getRHS().accept(this);
@@ -53,10 +58,8 @@ public class ReassignmentChecker implements Visitor{
 
 
   /**
-
-    @param a assignment to be checked
-    @return SymbolicExpression that is checked
-
+    * @param a assignment to be checked
+    * @return SymbolicExpression that is checked
   */
 
     // Need better printing (if we are to follow the example on the website)
@@ -72,14 +75,35 @@ public class ReassignmentChecker implements Visitor{
     }
   }
 
+  /**
+    * This method will just return the same instance of a it recieved
+    *
+    * @param a to be visited
+    * @return SymbolicExpression
+  */
+
   public SymbolicExpression visit(Constant a){
     return a;
   }
+
+  /**
+    * This method will just return the same instance of a it recieved
+    *
+    * @param a to be visited
+    * @return SymbolicExpression
+  */
 
   public SymbolicExpression visit(Cos a){
     a.getSubTree().accept(this);
     return a;
   }
+
+  /**
+    * This method will just return the same instance of a it recieved
+    *
+    * @param a to be visited
+    * @return SymbolicExpression
+  */
 
   public SymbolicExpression visit(Division a){
     a.getLHS().accept(this);
@@ -87,15 +111,36 @@ public class ReassignmentChecker implements Visitor{
     return a;
   }
 
+  /**
+    * This method will just return the same instance of a it recieved
+    *
+    * @param a to be visited
+    * @return SymbolicExpression
+  */
+
   public SymbolicExpression visit(Exp a){
     a.getSubTree().accept(this);
     return a;
   }
 
+  /**
+    * This method will just return the same instance of a it recieved
+    *
+    * @param a to be visited
+    * @return SymbolicExpression
+  */
+
   public SymbolicExpression visit(Log a){
     a.getSubTree().accept(this);
     return a;
   }
+
+  /**
+    * This method will just return the same instance of a it recieved
+    *
+    * @param a to be visited
+    * @return SymbolicExpression
+  */
 
   public SymbolicExpression visit(Multiplication a){
     a.getLHS().accept(this);
@@ -103,19 +148,47 @@ public class ReassignmentChecker implements Visitor{
     return a;
   }
 
+  /**
+    * This method will just return the same instance of a it recieved
+    *
+    * @param a to be visited
+    * @return SymbolicExpression
+  */
+
   public SymbolicExpression visit(Negation a){
     a.getSubTree().accept(this);
     return a;
   }
 
+
+  /**
+    * You should not visit a Command instance
+    *
+    * @exception IllegalExpressionException if visited
+  */
+
   public SymbolicExpression visit(Quit a){
     throw new IllegalExpressionException("Cannot check types of Command class");
   }
+
+  /**
+    * This method will just return the same instance of a it recieved
+    *
+    * @param a to be visited
+    * @return SymbolicExpression
+  */
 
   public SymbolicExpression visit(Sin a){
     a.getSubTree().accept(this);
     return a;
   }
+
+  /**
+    * This method will just return the same instance of a it recieved
+    *
+    * @param a to be visited
+    * @return SymbolicExpression
+  */
 
   public SymbolicExpression visit(Subtraction a){
     a.getLHS().accept(this);
@@ -123,9 +196,23 @@ public class ReassignmentChecker implements Visitor{
     return a;
   }
 
+  /**
+    * This method will just return the same instance of a it recieved
+    *
+    * @param a to be visited
+    * @return SymbolicExpression
+  */
+
   public SymbolicExpression visit(Variable a){
     return a;
   }
+
+  /**
+    * This method will just return the same instance of a it recieved
+    *
+    * @param a to be visited
+    * @return SymbolicExpression
+  */
 
   public SymbolicExpression visit(Scope a){
     stack.add(0, new ArrayList<SymbolicExpression>());
@@ -134,21 +221,55 @@ public class ReassignmentChecker implements Visitor{
     return a;
   }
 
+  /**
+    * You should not visit a Command instance
+    *
+    * @exception IllegalExpressionException if visited
+  */
+
   public SymbolicExpression visit(Vars a){
     throw new IllegalExpressionException("Cannot check types of Command class");
   }
+
+  /**
+    * This method will just return the same instance of a it recieved
+    *
+    * @param a to be visited
+    * @return SymbolicExpression
+  */
 
   public SymbolicExpression visit(Conditional a){
     return a;
   }
 
+  /**
+    * This method will just return the same instance of a it recieved
+    *
+    * @param a to be visited
+    * @return SymbolicExpression
+  */
+
     public SymbolicExpression visit(FunctionDeclaration a){
 	return a;
     }
 
+    /**
+      * This method will just return the same instance of a it recieved
+      *
+      * @param a to be visited
+      * @return SymbolicExpression
+    */
+
     public SymbolicExpression visit(Sequence a){
 	return a;
     }
+
+    /**
+      * This method will just return the same instance of a it recieved
+      *
+      * @param a to be visited
+      * @return SymbolicExpression
+    */
 
     public SymbolicExpression visit(FunctionCall a){
 	return a;

@@ -1,5 +1,13 @@
 package org.ioopm.calculator.ast;
 
+/**
+
+  A class that will represent the conditional nodes in the Abstract Syntax Tree
+
+  @author Jonathan Gustafsson, Joachim Forsberg
+
+*/
+
 
 public class Conditional extends SymbolicExpression{
 
@@ -18,23 +26,41 @@ public class Conditional extends SymbolicExpression{
     this.s2 = s2;
   }
 
-  protected SymbolicExpression getLHS(){
+  /**
+    @return SymbolicExpression on the left side of comparison
+  */
+  public SymbolicExpression getLHS(){
     return this.lhs;
   }
 
-  protected SymbolicExpression getRHS(){
+  /**
+    @return SymbolicExpression on the right side of comparison
+  */
+  public SymbolicExpression getRHS(){
     return this.rhs;
   }
 
-  protected SymbolicExpression getS1(){
+  /**
+    @return SymbolicExpression that will be returned if the conditional check
+            hold. Will be of type Scope
+  */
+  public SymbolicExpression getS1(){
     return this.s1;
   }
 
-  protected SymbolicExpression getS2(){
+
+  /**
+    @return SymbolicExpression that will be returned if the conditional check
+            do not hold. Will be of type Scope
+  */
+  public SymbolicExpression getS2(){
     return this.s2;
   }
 
-  protected String getOperation(){
+  /**
+    @return String that tells what conditional operation is used in the instance
+  */
+  public String getOperation(){
     return this.operation;
   }
 

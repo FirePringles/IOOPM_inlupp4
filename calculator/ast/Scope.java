@@ -1,5 +1,15 @@
 package org.ioopm.calculator.ast;
 
+/**
+  * A Scope instance will have local variables and will not affect the program outside
+  * its scope. Functions will have their own scopes.
+  *
+  * @see FunctionDeclaration
+  * @see FunctionCall
+  *
+  * @author Jonathan Gustafsson, Joachim Forsberg
+*/
+
 public class Scope extends SymbolicExpression{
 
   private SymbolicExpression exp;
@@ -13,7 +23,11 @@ public class Scope extends SymbolicExpression{
       return v.visit(this);
     }
 
-    protected SymbolicExpression getExp(){
+    /**
+      * @return SymbolicExpression that is inside the scope
+    */
+
+    public SymbolicExpression getExp(){
       return this.exp;
     }
 

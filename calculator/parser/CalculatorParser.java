@@ -47,6 +47,7 @@ public class CalculatorParser {
      *
      * @param input the string which we want the parser to pars
      * @return SymbolicExpression the result of the parsed input string
+     * @throws IOException if an I/O error occurs.
      */
     public SymbolicExpression parse(String input) throws IOException {
         this.st = new StreamTokenizer(new StringReader(input));
@@ -61,6 +62,8 @@ public class CalculatorParser {
      * Check if current object is either a command or a expression.
      *
      * @return SymbolicExpression the result which is either a expression or a command
+     * @throws SyntaxErrorException if unexpected tokens were parsed
+     * @throws IOException if an I/O error occurs.
      */
     private SymbolicExpression top_level() throws IOException {
         SymbolicExpression result = null;
@@ -90,6 +93,7 @@ public class CalculatorParser {
      * Method for creating a FunctionDeclaration object from string input.
      *
      * @return SymbolicExpression. The FunctionDeclaration in form of the superclass SymbolicExpression
+     * @throws IOException if an I/O error occurs.
      */
     public SymbolicExpression functionDec() throws IOException{
         String funcName;
@@ -122,6 +126,7 @@ public class CalculatorParser {
      * Check if object after current object is a '=' and if it is then create new Assignment
      *
      * @return SymbolicExpression the result which can be new Assignment
+     * @throws IOException if an I/O error occurs.
      */
     public SymbolicExpression assignment() throws IOException {
         SymbolicExpression lhs = expression();
@@ -143,6 +148,7 @@ public class CalculatorParser {
      * else throw IOException
      *
      * @return Command the result command
+     * @throws IOException if an I/O error occurs.
      */
 
     public Command command() throws IOException {
@@ -179,6 +185,7 @@ public class CalculatorParser {
      * Goes throuh the input string and creates a conditional object from that.
      *
      * @return SymbolicExpression. The condidtional in form of a SymbolicExpression
+     * @throws IOException if an I/O error occurs.
      */
 
     private SymbolicExpression conditional() throws IOException{
@@ -223,6 +230,7 @@ public class CalculatorParser {
      * Help function for conditional. Checks if a string is a valid operation to use in if
      *
      * @return String. A valid operation in form of a string.
+     * @throws IOException if an I/O error occurs.
      */
     private String isOperation() throws IOException{
 
@@ -260,6 +268,7 @@ public class CalculatorParser {
      * Check if current object is a word and if it is valid. If it is then check if it is a namedConstant or a new variable
      *
      * @return Variable the variable which is either a new variable or a aleady existing namedConstant
+     * @throws IOException if an I/O error occurs.
      */
     public SymbolicExpression identifier() throws IOException {
         if(this.st.nextToken() == this.st.TT_WORD && isValidIdentifier(this.st.sval)) {
@@ -300,6 +309,7 @@ public class CalculatorParser {
      * If object is either '+' or '-' then send third object to term method and then use appropriate mathematical method
      *
      * @return SymbolicExpression the result
+     * @throws IOException if an I/O error occurs.
      */
     public SymbolicExpression expression() throws IOException {
         SymbolicExpression result = term();
@@ -323,6 +333,7 @@ public class CalculatorParser {
      *
      *
      * @return SymbolicExpression the result
+     * @throws IOException if an I/O error occurs.
      *
      */
     /// This method works like expression, but with factors and * instead of terms and +/-
@@ -350,6 +361,8 @@ public class CalculatorParser {
      * @see number
      * @see identifier
      * @see unary
+     *
+     * @throws IOException if an I/O error occurs.
      */
     private SymbolicExpression factor() throws IOException {
         SymbolicExpression result;
@@ -363,7 +376,7 @@ public class CalculatorParser {
                 throw new SyntaxErrorException("expected ')'");
             }
         }
-        //this.st.pushBack();
+
         else if(this.st.ttype == '{'){
             result = scope();
             if(this.st.nextToken() != '}'){
@@ -388,10 +401,13 @@ public class CalculatorParser {
         return result;
     }
 
-    private SymbolicExpression scope() throws IOException{
-        //      SymbolicExpression result;
-        return assignment();
+    /**
+    *
+    *  @return assignment
+    */
 
+    private SymbolicExpression scope() throws IOException{
+        return assignment();
     }
 
     /**

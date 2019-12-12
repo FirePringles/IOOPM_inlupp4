@@ -5,26 +5,43 @@ package org.ioopm.calculator.ast;
   Except for the evaluate method the only method existing is the visit method.
   All nodes in the AST has its own visit method.
 
+  @author Jonathan Gustafsson, Joachim Forsberg
 
 */
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class EvaluationVisitor implements Visitor {
+    /**
+      * Environment containing all the variables that have been defined during runtime.
+    */
     private Environment env = null;
+
+    /**
+      * Will contain the variables used when using a function call
+    */
     private ArrayList<Atom> funcConstants;
+
+    /**
+      * A stack of environments. There will/should always be one environment
+      * on the stack. The stack will be push and popped during runtime. It should
+      * should never have any other size than one after an expression is completely evaluated.
+    */
     private ArrayList<Environment> stack;
+
+    /**
+      * Containing all the existing function that has been defined during runtime
+    */
     private HashMap<String, FunctionDeclaration> funcDecList;
 
     /**
-      The topLevel method that will start a chain of call to the visit method.
-
-      @param topLevel the top level SymbolicExpression to be evaluated
-      @param env the environment containing all variables
-      @param funcDecList the list containing all known functions
-
+      * The topLevel method that will start a chain of call to the visit method.
+      *
+      * @param topLevel the top level SymbolicExpression to be evaluated
+      * @param env the environment containing all variables
+      * @param funcDecList the list containing all known functions
+      *
       @return an evaluated SymbolicExpression
-
     */
 
     public SymbolicExpression evaluate(SymbolicExpression topLevel, Environment env, HashMap<String, FunctionDeclaration> funcDecList) {
@@ -34,6 +51,11 @@ public class EvaluationVisitor implements Visitor {
         this.stack.add(0, env);
         return topLevel.accept(this);
     }
+
+    /**
+      * @param n node to be visited
+      * @return SymbolicExpression that has been visited. In other words evaluated.
+    */
 
     public SymbolicExpression visit(Addition n) {
 
@@ -46,6 +68,11 @@ public class EvaluationVisitor implements Visitor {
             return new Addition(left, right);
         }
     }
+
+    /**
+      * @param n node to be visited
+      * @return SymbolicExpression that has been visited. In other words evaluated.
+    */
 
     public SymbolicExpression visit(Assignment n){
         SymbolicExpression lhs = n.getLHS().accept(this);
@@ -60,9 +87,18 @@ public class EvaluationVisitor implements Visitor {
         return lhs;
     }
 
+    /**
+      * @param n node to be visited
+      * @return SymbolicExpression that has been visited. In other words evaluated.
+    */
     public SymbolicExpression visit(Constant n){
         return n;
     }
+
+    /**
+      * @param n node to be visited
+      * @return SymbolicExpression that has been visited. In other words evaluated.
+    */
 
     public SymbolicExpression visit(Cos n){
         SymbolicExpression e = n.getSubTree().accept(this);
@@ -72,14 +108,17 @@ public class EvaluationVisitor implements Visitor {
         return new Cos(e);
     }
 
+    /**
+      * @param n node to be visited
+      * @return SymbolicExpression that has been visited. In other words evaluated.
+    */
+
     public SymbolicExpression visit(Division n){
 
         SymbolicExpression lhs = n.getLHS().accept(this);
         SymbolicExpression rhs = n.getRHS().accept(this);
 
         if(lhs.isConstant() && rhs.isConstant()) {
-            //Yes, I know you can't compare doubles like this
-            //But such are the problems with rounding and computation
             if(rhs.getValue() == 0) {
                 throw new IllegalExpressionException("Seriously, don't divide by zero...");
             }
@@ -89,6 +128,11 @@ public class EvaluationVisitor implements Visitor {
 
     }
 
+    /**
+      * @param n node to be visited
+      * @return SymbolicExpression that has been visited. In other words evaluated.
+    */
+
     public SymbolicExpression visit(Exp n){
         SymbolicExpression e = n.getSubTree().accept(this);
         if(e.isConstant()) {
@@ -97,6 +141,11 @@ public class EvaluationVisitor implements Visitor {
         return new Exp(e);
     }
 
+    /**
+      * @param n node to be visited
+      * @return SymbolicExpression that has been visited. In other words evaluated.
+    */
+
     public SymbolicExpression visit(Log n){
         SymbolicExpression e = n.getSubTree().accept(this);
         if(e.isConstant()) {
@@ -104,6 +153,11 @@ public class EvaluationVisitor implements Visitor {
         }
         return new Log(e);
     }
+
+    /**
+      * @param n node to be visited
+      * @return SymbolicExpression that has been visited. In other words evaluated.
+    */
 
     public SymbolicExpression visit(Multiplication n){
         SymbolicExpression lhs = n.getLHS().accept(this);
@@ -115,6 +169,11 @@ public class EvaluationVisitor implements Visitor {
         return new Multiplication(lhs, rhs);
     }
 
+    /**
+      * @param n node to be visited
+      * @return SymbolicExpression that has been visited. In other words evaluated.
+    */
+
     public SymbolicExpression visit(Negation n){
         SymbolicExpression e = n.getSubTree().accept(this);
         if(e.isConstant()) {
@@ -123,9 +182,19 @@ public class EvaluationVisitor implements Visitor {
         return new Negation(e);
     }
 
+    /**
+      * @param n node to be visited
+      * @return SymbolicExpression that has been visited. In other words evaluated.
+    */
+
     public SymbolicExpression visit(Quit n){
         throw new RuntimeException("Can't evaluate vars");
     }
+
+    /**
+      * @param n node to be visited
+      * @return SymbolicExpression that has been visited. In other words evaluated.
+    */
 
     public SymbolicExpression visit(Sin n){
         SymbolicExpression e = n.getSubTree().accept(this);
@@ -134,6 +203,11 @@ public class EvaluationVisitor implements Visitor {
         }
         return new Sin(e);
     }
+
+    /**
+      * @param n node to be visited
+      * @return SymbolicExpression that has been visited. In other words evaluated.
+    */
 
     public SymbolicExpression visit(Subtraction n){
 
@@ -147,6 +221,11 @@ public class EvaluationVisitor implements Visitor {
 
     }
 
+    /**
+      * @param n node to be visited
+      * @return SymbolicExpression that has been visited. In other words evaluated.
+    */
+
     public SymbolicExpression visit(Variable n){
         for(Environment e : this.stack){
             if(e.containsKey(n)){
@@ -155,6 +234,11 @@ public class EvaluationVisitor implements Visitor {
         }
         return n;//new Variable(n.toString());
     }
+
+    /**
+      * @param n node to be visited
+      * @return SymbolicExpression that has been visited. In other words evaluated.
+    */
 
     public SymbolicExpression visit(Scope n){
         // Push on stack
@@ -168,14 +252,19 @@ public class EvaluationVisitor implements Visitor {
         return exp;
     }
 
+    /**
+      * @param n node to be visited
+      * @return SymbolicExpression that has been visited. In other words evaluated.
+    */
+
     public SymbolicExpression visit(Vars n){
         throw new RuntimeException("Can't evaluate vars");
     }
 
+
     /**
-      
-
-
+      * @param n node to be visited
+      * @return SymbolicExpression that has been visited. In other words evaluated.
     */
 
     public SymbolicExpression visit(Conditional n){
@@ -223,6 +312,11 @@ public class EvaluationVisitor implements Visitor {
         return result;
     }
 
+    /**
+      * @param n node to be visited
+      * @return SymbolicExpression that has been visited. In other words evaluated.
+    */
+
     public SymbolicExpression visit(FunctionDeclaration n){
         ArrayList<Variable> vars = n.getFunctionPara();
 
@@ -234,6 +328,11 @@ public class EvaluationVisitor implements Visitor {
         return sequence;
     }
 
+    /**
+      * @param n node to be visited
+      * @return SymbolicExpression that has been visited. In other words evaluated.
+    */
+
     public SymbolicExpression visit(Sequence n){
         ArrayList<SymbolicExpression> body = n.getBody();
         SymbolicExpression result = new Constant(0);
@@ -242,6 +341,11 @@ public class EvaluationVisitor implements Visitor {
         }
         return result;
     }
+
+    /**
+      * @param n node to be visited
+      * @return SymbolicExpression that has been visited. In other words evaluated.
+    */
 
     public SymbolicExpression visit(FunctionCall n){
         this.stack.add(0, new Environment());
@@ -255,7 +359,7 @@ public class EvaluationVisitor implements Visitor {
         } else {
            throw new IllegalExpressionException("That function does not exist or the arguments are wrong");
          }
-	this.funcConstants = null;
+	      this.funcConstants = null;
         this.stack.remove(0);
         return result;
     }

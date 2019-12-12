@@ -1,5 +1,13 @@
 package org.ioopm.calculator.ast;
 
+/**
+
+  @author Jonathan Gustafsson, Joachim Forsberg
+
+*/
+
+
+
 public interface Visitor {
     public SymbolicExpression visit(Addition n);
     public SymbolicExpression visit(Assignment n);

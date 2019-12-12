@@ -111,7 +111,6 @@ public class CalculatorParser {
 		  throw new SyntaxErrorException("Something is wrong here");
 	      }
             }
-	    System.out.println(parameters.size());
         } else {
             throw new SyntaxErrorException("Expected parameters");
         }
@@ -130,6 +129,9 @@ public class CalculatorParser {
 
         while(this.st.nextToken() == '=') {
             rhs = identifier();
+	    if(rhs.isFunctionCall()){
+		throw new SyntaxErrorException("Can't assign functions");
+	    }
             lhs = new Assignment(lhs, rhs);
         }
         this.st.pushBack();
@@ -245,7 +247,6 @@ public class CalculatorParser {
 	}
 
 	if(this.st.ttype == '='){
-	    System.out.println("hej");
 	    this.st.nextToken();
 	    if(this.st.ttype == '='){
 		return "==";

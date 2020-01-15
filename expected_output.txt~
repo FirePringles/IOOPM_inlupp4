@@ -1,0 +1,24 @@
+Please enter an expression: eval: 10.0
+Please enter an expression: eval: 22.0
+Please enter an expression: eval: 5.141592653589793
+Please enter an expression: Illegal assignment 
+  5.0 = pi
+Please enter an expression: Illegal assignment 
+  3.141592653589793 + 2.0 = pi
+Please enter an expression: eval: 2.0
+Please enter an expression: eval: -2.0
+Please enter an expression: Syntax Error: Expected newline but got 43
+Please enter an expression: 2.0 := x is already assigned in this expression
+Please enter an expression: Variables: x = 2.0, ans = -2.0, 
+Please enter an expression: eval: 12.0
+Please enter an expression: Variables: x = 3.0, y = 9.0, ans = 12.0, 
+Please enter an expression: eval: 7.0
+Please enter an expression: Variables: x = 2.0, y = 9.0, ans = 7.0, 
+Please enter an expression: Please enter an expression: Variables: 
+Please enter an expression: eval: 2.0
+Please enter an expression: eval: 2.0
+Please enter an expression: eval: 2.0
+Please enter an expression: eval: 0.0
+Please enter an expression: Commands executed: 20
+Commands successfully evaluated: 11
+Fully evaluated commands: 11
